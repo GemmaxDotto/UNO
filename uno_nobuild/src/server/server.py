@@ -42,7 +42,7 @@ def start_server():
             client_thread.start()
 
     except KeyboardInterrupt:
-        print("Server terminato manualmente.")
+        print("Server terminato in modo manuale.")
     finally:
         # Chiudi il socket del server
         server_socket.close()
