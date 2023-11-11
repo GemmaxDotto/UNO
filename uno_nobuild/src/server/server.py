@@ -27,8 +27,8 @@ def start_server():
     # Associa il socket all'indirizzo IP e alla porta
     server_socket.bind((server_address, server_port))
 
-    # Metti il server in ascolto su un massimo di 5 connessioni in coda
-    server_socket.listen(5)
+    # Metti il server in ascolto su un massimo di 4 connessioni in coda (giocatori)
+    server_socket.listen(4)
     print(f"Server in ascolto su {server_address}:{server_port}")
 
     try:
