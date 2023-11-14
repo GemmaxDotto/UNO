@@ -1,7 +1,17 @@
+import javax.swing.SwingUtilities;
+
 public class App {
     public static void main(String[] args) throws Exception {
-         TCPClient client=new TCPClient("localhost",12346);
-         client.sendMessage("nome;start");
-        client.receiveMessage();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new ClientGUI().setVisible(true);
+            }
+        });
+        ClientGUI unoClient = new ClientGUI();
+         //while(!unoClient.client.receiveMessage().equals("end"))
+         //client.sendMessage("nome;start");
+        //client.receiveMessage();
+        
     }
 }
