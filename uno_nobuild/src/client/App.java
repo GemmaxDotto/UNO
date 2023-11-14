@@ -5,7 +5,7 @@ public class App {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new ClientGUI().setVisible(true);
+                new GUIClientSTART().setVisible(true);
             }
         });
         ClientGUI unoClient = new ClientGUI();
