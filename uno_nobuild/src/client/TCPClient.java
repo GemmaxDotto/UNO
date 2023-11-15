@@ -4,6 +4,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import javax.swing.SwingUtilities;
+
 
 public class TCPClient {
     private Socket socket;
@@ -19,6 +21,19 @@ public class TCPClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void Join(){
+
+
+        //TCPClient client=new TCPClient("localhost",12346);
+            NickNameWindow nicknameW=new NickNameWindow();
+            String nickNameString=nicknameW.showInputDialog();
+        
+            String message=nickNameString+";start";
+        sendMessage(message);
+
+
     }
 
     public void sendMessage(String message) {

@@ -1,5 +1,4 @@
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.ImageObserver;
 
@@ -7,6 +6,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 public class GUIClientSTART extends JFrame {
 
@@ -15,9 +15,6 @@ public class GUIClientSTART extends JFrame {
 
         // Configura l'interfaccia grafica
         setupUI();
-
-        // Configura il client Uno
-        setupUnoClient();
     }
 
     private void setupUI() {
@@ -61,8 +58,15 @@ public class GUIClientSTART extends JFrame {
 
         startButton.addActionListener(e -> {
             // Ciò che vuoi che accada quando il pulsante viene premuto
-            System.out.println("Il pulsante JOIN A PARTY è stato premuto!");
-            // Puoi aggiungere qui il codice per avviare un'altra finestra o eseguire altre azioni.
+            dispose();
+            
+            SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new ClientGUI().setVisible(true);
+            }
+        });
+
         });
 
         rulesButton.addActionListener(e -> {
@@ -82,18 +86,6 @@ public class GUIClientSTART extends JFrame {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Centra la finestra
-
-    }
-
-    
-
-    private void setupUnoClient() {
-        // Configura la logica del client Uno
-        // Implementa la connessione al server, la ricezione e l'invio dei messaggi,
-        // ecc.
-    }
-
-    private void sendMessage() {
 
     }
 

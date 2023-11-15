@@ -8,7 +8,7 @@ public class App {
                 new GUIClientSTART().setVisible(true);
             }
         });
-        ClientGUI unoClient = new ClientGUI();
+        //ClientGUI unoClient = new ClientGUI();
          //while(!unoClient.client.receiveMessage().equals("end"))
          //client.sendMessage("nome;start");
         //client.receiveMessage();
