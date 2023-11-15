@@ -1,23 +1,20 @@
 import socket
 import threading
-from queue import Queue, Empty 
 
-
-
-def handle_client(client_socket, message_queue, shutdown_event):
+def handle_client(client_socket, message_event, shutdown_event):
     try:
         # Invia un messaggio al client
         message_to_send = "Ciao, client!"
         client_socket.sendall(message_to_send.encode())
 
-        # Ricevi messaggi dal client e aggiungili alla coda
+        # Ricevi messaggi dal client e aggiornali nella struttura dati
         while True:
             data = client_socket.recv(1024)
             if not data:
                 break
 
             received_message = data.decode()
-            message_queue.put((client_socket, received_message))
+            message_event.set(received_message)
 
     except Exception as e:
         print(f"Errore durante la gestione del client: {e}")
@@ -26,23 +23,23 @@ def handle_client(client_socket, message_queue, shutdown_event):
         # Chiudi il socket del client
         client_socket.close()
 
-def send_messages(message_queue, shutdown_event):
+def send_messages(message_event, shutdown_event):
     try:
         while not shutdown_event.is_set():
-            try:
-                # Prendi un messaggio dalla coda e invialo a tutti i client
-                message = message_queue.get(timeout=1)
-                client_socket, message_to_send = message
-                print(f"Invio messaggio a tutti i client: {message_to_send}")
-                client_socket.sendall(message_to_send.encode())
+            # Attendere fino a quando un nuovo messaggio è disponibile
+            message_event.wait()
 
-            except Empty:
-                pass
+            # Ottenere il messaggio e reimpostare l'evento
+            server_message = message_event.get()
+            message_event.clear()
+
+            # Puoi fare ciò che vuoi con il messaggio del server
+            print(f"Ricevuto messaggio dal client: {server_message}")
 
     except Exception as e:
-        print(f"Errore durante l'invio dei messaggi: {e}")
+        print(f"Errore durante la gestione dei messaggi: {e}")
 
-def listen_for_clients(server_socket, message_queue, shutdown_event):
+def listen_for_clients(server_socket, message_event, shutdown_event):
     try:
         while not shutdown_event.is_set():
             # Accetta una connessione dal client
@@ -50,7 +47,7 @@ def listen_for_clients(server_socket, message_queue, shutdown_event):
             print(f"Connessione accettata da {client_address}")
 
             # Crea un thread per gestire il client
-            client_thread = threading.Thread(target=handle_client, args=(client_socket, message_queue, shutdown_event))
+            client_thread = threading.Thread(target=handle_client, args=(client_socket, message_event, shutdown_event))
             client_thread.start()
 
     except Exception as e:
@@ -58,7 +55,7 @@ def listen_for_clients(server_socket, message_queue, shutdown_event):
 
 def main():
     server_address = "localhost"
-    server_port = 12346
+    server_port = 12346  # Specifica la porta desiderata
 
     # Crea un socket del server
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -71,19 +68,19 @@ def main():
 
     print(f"Server in ascolto su {server_address}:{server_port}")
 
-    # Coda per la comunicazione tra i thread
-    message_queue = Queue()
+    # Creare un evento per la comunicazione tra i thread
+    message_event = threading.Event()
 
     # Oggetto di controllo per segnalare l'arresto dei thread
     shutdown_event = threading.Event()
 
     try:
         # Crea un thread per l'ascolto dei client
-        listen_thread = threading.Thread(target=listen_for_clients, args=(server_socket, message_queue, shutdown_event))
+        listen_thread = threading.Thread(target=listen_for_clients, args=(server_socket, message_event, shutdown_event))
         listen_thread.start()
 
         # Crea un thread per l'invio dei messaggi
-        send_thread = threading.Thread(target=send_messages, args=(message_queue, shutdown_event))
+        send_thread = threading.Thread(target=send_messages, args=(message_event, shutdown_event))
         send_thread.start()
 
         # Attendi l'interruzione da tastiera
