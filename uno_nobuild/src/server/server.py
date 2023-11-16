@@ -3,9 +3,7 @@ import threading
 
 def handle_client(client_socket, message_event, shutdown_event):
     try:
-        # Invia un messaggio al client
-        message_to_send = "Ciao, client!"
-        client_socket.sendall(message_to_send.encode())
+        
 
         # Ricevi messaggi dal client e aggiornali nella struttura dati
         while True:
@@ -14,7 +12,13 @@ def handle_client(client_socket, message_event, shutdown_event):
                 break
 
             received_message = data.decode()
-            message_event.set(received_message)
+            if received_message.split(';')[1]=="start":# La condizione è soddisfatta, invia un messaggio di conferma
+             conferma_message = "ok" 
+             client_socket.sendall(conferma_message.encode())
+            else:# La condizione non è soddisfatta, esegui altre azioni o invia un messaggio diverso se necessario
+             altro_message = "no"
+             client_socket.sendall(altro_message.encode())
+             #message_event.set(received_message)
 
     except Exception as e:
         print(f"Errore durante la gestione del client: {e}")
