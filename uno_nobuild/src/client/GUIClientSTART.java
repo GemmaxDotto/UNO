@@ -20,7 +20,7 @@ public class GUIClientSTART extends JFrame {
     private void setupUI() {
 
         // Carica l'immagine di sfondo (assicurati che il percorso sia corretto)
-        ImageIcon backgroundImageIcon = new ImageIcon("D:\\UNO\\uno_nobuild\\src\\docs\\images\\image1_0.jpg");
+        ImageIcon backgroundImageIcon = new ImageIcon("uno_nobuild\\src\\docs\\images\\image1_0.jpg");
         Image backgroundImage = backgroundImageIcon.getImage();
 
         // Crea un pannello con l'immagine di sfondo
@@ -59,15 +59,9 @@ public class GUIClientSTART extends JFrame {
         startButton.addActionListener(e -> {
             // Ciò che vuoi che accada quando il pulsante viene premuto
             dispose();
-            
-            SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new ClientGUI().setVisible(true);
-            }
+            new ClientGUI().setVisible(true);
         });
-
-        });
+        
 
         rulesButton.addActionListener(e -> {
             // Ciò che vuoi che accada quando il pulsante viene premuto
