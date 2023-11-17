@@ -5,8 +5,13 @@ import java.awt.event.ActionListener;
 
 public class ClientGUI extends JFrame {
 
+    private wait waiting;
+    
+
     public ClientGUI() {
         super("Uno Game Client");
+        this.waiting = waiting;
+        
 
         TCPClient client=new TCPClient("localhost",12346);
         client.Join();
@@ -76,6 +81,8 @@ public class ClientGUI extends JFrame {
         setSize(1100, 900); // Imposta le dimensioni della finestra
         setLocationRelativeTo(null); // Centra la finestra
     }
+
+    
 
 
 }

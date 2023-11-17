@@ -11,21 +11,17 @@ public class wait {
         SwingUtilities.invokeLater(() -> {
             // Crea la finestra di attesa
             waitDialog = new JDialog((Frame) null, "Attendi...", true);
-            waitDialog.setSize(500, 650);
+            waitDialog.setSize(300, 200);
             waitDialog.setLocationRelativeTo(null);
             waitDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 
             // Aggiungi un'immagine di attesa (sostituisci con il tuo percorso dell'immagine)
-            ImageIcon loadingIcon = new ImageIcon("uno_nobuild\\src\\docs\\images\\waiting.gif");
+            ImageIcon loadingIcon = new ImageIcon("path/to/waiting.gif");
             JLabel loadingLabel = new JLabel(loadingIcon);
-
-            // Aggiungi un messaggio
-            JLabel messageLabel = new JLabel("Attendi...");
 
             // Configura il layout
             waitDialog.setLayout(new BorderLayout());
             waitDialog.add(loadingLabel, BorderLayout.CENTER);
-            waitDialog.add(messageLabel, BorderLayout.SOUTH);
 
             // Aggiungi un ascoltatore per gestire la chiusura della finestra di attesa
             waitDialog.addWindowListener(new WindowAdapter() {

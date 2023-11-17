@@ -1,12 +1,10 @@
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.ImageObserver;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 public class GUIClientSTART extends JFrame {
 
@@ -20,13 +18,11 @@ public class GUIClientSTART extends JFrame {
     private void setupUI() {
 
         // Carica l'immagine di sfondo (assicurati che il percorso sia corretto)
-        ImageIcon backgroundImageIcon = new ImageIcon("uno_nobuild\\src\\docs\\images\\image1_0.jpg");
-        Image backgroundImage = backgroundImageIcon.getImage();
+        ImageIcon backgroundImageIcon = new ImageIcon("uno_nobuild\\src\\docs\\images\\unocards3.jpg");
 
         // Crea un pannello con l'immagine di sfondo
-        BackgroundPanel backgroundPanel = new BackgroundPanel(backgroundImage);
+        BackgroundPanel backgroundPanel = new BackgroundPanel(backgroundImageIcon);
         backgroundPanel.setLayout(new GridBagLayout());
-
         OvalButton startButton = new OvalButton("JOIN A PARTY");
         OvalButton rulesButton = new OvalButton("HOW TO PLAY");
         OvalButton creditsButton = new OvalButton("CREDITS");
@@ -54,8 +50,7 @@ public class GUIClientSTART extends JFrame {
         gbc.gridy++;
         backgroundPanel.add(creditsButton, gbc);
 
-        add(backgroundPanel);
-
+        
         startButton.addActionListener(e -> {
             // Ciò che vuoi che accada quando il pulsante viene premuto
             dispose();
@@ -76,11 +71,11 @@ public class GUIClientSTART extends JFrame {
         });
 
         // Imposta la grandezza della finestra
-        setSize(1000, 700);
+        setSize(1200, 700);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Centra la finestra
-
+        add(backgroundPanel);
     }
 
 }
@@ -115,15 +110,18 @@ class OvalButton extends JButton {
 }
 
 class BackgroundPanel extends JPanel {
-    private Image backgroundImage;
+    private ImageIcon backgroundImageIcon;
 
-    public BackgroundPanel(Image backgroundImage) {
-        this.backgroundImage = backgroundImage;
+    public BackgroundPanel(ImageIcon backgroundImageIcon) {
+        this.backgroundImageIcon = backgroundImageIcon;
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), (ImageObserver) this);
+        if (backgroundImageIcon != null) {
+            Image backgroundImage = backgroundImageIcon.getImage();
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        }
     }
 }
