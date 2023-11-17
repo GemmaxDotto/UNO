@@ -12,12 +12,19 @@ def handle_client(client_socket, message_event, shutdown_event):
                 break
 
             received_message = data.decode()
-            if received_message.split(';')[1]=="start":# La condizione è soddisfatta, invia un messaggio di conferma
+            
+            parts = received_message.split(';')
+            print("Parti del messaggio:", parts)
+
+            if received_message.split(';')[1].strip() == "start":# La condizione è soddisfatta, invia un messaggio di conferma
              conferma_message = "ok" 
+             print(f"Invio: {conferma_message}")
              client_socket.sendall(conferma_message.encode())
             else:# La condizione non è soddisfatta, esegui altre azioni o invia un messaggio diverso se necessario
              altro_message = "no"
              client_socket.sendall(altro_message.encode())
+             print(f"Errore durante la gestione del client: {received_message}")
+
              #message_event.set(received_message)
 
     except Exception as e:
