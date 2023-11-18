@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.ImageObserver;
+import java.io.IOException;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -54,7 +56,12 @@ public class GUIClientSTART extends JFrame {
         startButton.addActionListener(e -> {
             // Ciò che vuoi che accada quando il pulsante viene premuto
             dispose();
-            new ClientGUI().setVisible(true);
+            try {
+                new ClientGUI().setVisible(true);
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         });
         
 
