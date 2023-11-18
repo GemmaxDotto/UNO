@@ -2,18 +2,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class ClientGUI extends JFrame {
 
     private wait waiting;
     
 
-    public ClientGUI() {
+    public ClientGUI() throws IOException {
         super("Uno Game Client");
         this.waiting = waiting;
         
 
-        TCPClient client=new TCPClient("localhost",12346);
+        TCPClient client=new TCPClient("localhost",666);
         client.Join();
 
         try {
