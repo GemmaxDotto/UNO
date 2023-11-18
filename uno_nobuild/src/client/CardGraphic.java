@@ -21,11 +21,11 @@ public class CardGraphic extends JPanel {
 
     private final Consumer<Card> handleCardClick;
 
-    public CardView(Card card) {
+    public CardGraphic(Card card) {
         this(card, null);
     }
 
-    public CardView(Card card, Consumer<Card> onCardClick){
+    public CardGraphic(Card card, Consumer<Card> onCardClick){
         this.card = card;
         this.handleCardClick = onCardClick;
         this.value = StyleUtil.getValueToDisplay(card);
