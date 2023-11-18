@@ -16,7 +16,7 @@ public class wait {
             waitDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 
             // Aggiungi un'immagine di attesa (sostituisci con il tuo percorso dell'immagine)
-            ImageIcon loadingIcon = new ImageIcon("path/to/waiting.gif");
+            ImageIcon loadingIcon = new ImageIcon("uno_nobuild\\src\\docs\\images\\waiting.gif");
             JLabel loadingLabel = new JLabel(loadingIcon);
 
             // Configura il layout
