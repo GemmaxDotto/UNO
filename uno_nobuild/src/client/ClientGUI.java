@@ -3,25 +3,53 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class ClientGUI extends JFrame {
 
-    private wait waiting;
-    
+    // private wait waiting;
+    GameManaging Game;
+    private UnoDeck unoDeck;
+    private CardPanel cardPanel;
 
     public ClientGUI() throws IOException {
         super("Uno Game Client");
-        this.waiting = waiting;
         
-
-        TCPClient client=new TCPClient("localhost",666);
-        client.Join();
+        Game=new GameManaging();
 
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-        } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+        } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException
+                | IllegalAccessException e) {
             e.printStackTrace();
         }
+
+        // Aggiungi alcune carte di UNO per esempio
+        for (UnoCard unoCard : Game.myCards) {
+            unoDeck.addCards(unoCard);
+        }
+
+        cardPanel = new CardPanel(unoDeck);
+
+        // Aggiungi il CardPanel al tuo frame
+        add(cardPanel, BorderLayout.CENTER);
+
+        // Aggiungi un pulsante per simulare l'aggiunta di una carta (da modificare secondo le tue esigenze)
+        JButton addButton = new JButton("Aggiungi Carta");
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Simula l'aggiunta di una carta al mazzo
+                //unoDeck.addCards(new UnoCard(UnoCard.Color.RED, UnoCard.Value.ONE));
+                unoDeck.addCards(new UnoCard(1, "R", false));
+
+                // Aggiorna il pannello delle carte
+                cardPanel.updateCards();
+            }
+        });
+        add(addButton, BorderLayout.SOUTH);
+        
+        
 
         // Creazione del pannello per il tavolo da gioco
         JPanel gameTablePanel = new JPanel();
@@ -42,7 +70,7 @@ public class ClientGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Aggiungi il testo della text field alla chat
-                chatArea.append("you:"+chatInputField.getText() + "\n");
+                chatArea.append("you:" + chatInputField.getText() + "\n");
                 // Pulisci la text field dopo l'invio
                 chatInputField.setText("");
             }
@@ -59,15 +87,19 @@ public class ClientGUI extends JFrame {
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
+        // Aggiungi il pannello delle carte al layout
         layout.setHorizontalGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(gameTablePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(chatScrollPane, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(gameTablePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+                                Short.MAX_VALUE)
+                        .addComponent(chatScrollPane, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+                                Short.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
                                 .addComponent(chatInputField)
                                 .addComponent(sendButton))
-                        .addComponent(unoButton))
-        );
+                        .addComponent(unoButton)
+      
+        ));
 
         layout.setVerticalGroup(layout.createSequentialGroup()
                 .addComponent(gameTablePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -75,15 +107,19 @@ public class ClientGUI extends JFrame {
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(chatInputField)
                         .addComponent(sendButton))
-                .addComponent(unoButton)
-        );
+                .addComponent(unoButton));
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1100, 900); // Imposta le dimensioni della finestra
         setLocationRelativeTo(null); // Centra la finestra
+
+
+        pack();
+        setVisible(true);
+
     }
 
-    
+  
 
 
 }

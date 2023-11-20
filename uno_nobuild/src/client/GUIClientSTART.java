@@ -7,7 +7,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-
+import javax.swing.SwingUtilities;
 
 public class GUIClientSTART extends JFrame {
 
@@ -43,7 +43,7 @@ public class GUIClientSTART extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(20  , 10, 20, 10); // Spaziatura tra i bottoni
+        gbc.insets = new Insets(20, 10, 20, 10); // Spaziatura tra i bottoni
 
         backgroundPanel.add(startButton, gbc);
 
@@ -53,29 +53,31 @@ public class GUIClientSTART extends JFrame {
         gbc.gridy++;
         backgroundPanel.add(creditsButton, gbc);
 
-        
         startButton.addActionListener(e -> {
             // Ciò che vuoi che accada quando il pulsante viene premuto
             dispose();
+
             try {
-                new ClientGUI().setVisible(true);
+                new ClientGUI().setVisible(true);;
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
+
         });
-        
 
         rulesButton.addActionListener(e -> {
             // Ciò che vuoi che accada quando il pulsante viene premuto
             System.out.println("Il pulsante RULES è stato premuto!");
-            // Puoi aggiungere qui il codice per avviare un'altra finestra o eseguire altre azioni.
+            // Puoi aggiungere qui il codice per avviare un'altra finestra o eseguire altre
+            // azioni.
         });
 
         creditsButton.addActionListener(e -> {
             // Ciò che vuoi che accada quando il pulsante viene premuto
             System.out.println("Il pulsante CREDITS è stato premuto!");
-            // Puoi aggiungere qui il codice per avviare un'altra finestra o eseguire altre azioni.
+            // Puoi aggiungere qui il codice per avviare un'altra finestra o eseguire altre
+            // azioni.
         });
 
         // Imposta la grandezza della finestra

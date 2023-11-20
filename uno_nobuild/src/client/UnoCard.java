@@ -1,7 +1,21 @@
-public class UnoCard {
+import javax.swing.JButton;
+
+public class UnoCard extends JButton{
     private int numero;
     private String colore;
     private boolean isSpeciale;
+
+    public void setNumero(int numero) {
+        this.numero = numero;
+    }
+
+    public void setColore(String colore) {
+        this.colore = colore;
+    }
+
+    public void setSpeciale(boolean isSpeciale) {
+        this.isSpeciale = isSpeciale;
+    }
 
     public UnoCard(int numero, String colore, boolean isSpeciale) {
         this.numero = numero;
