@@ -3,6 +3,7 @@ class giocatore:
         self.nick = nick
         self.numero_carte = numero_carte
         self.c_socket=c_socket
+        self.mazzo=[]
 
     def get_nick(self):
         return self.nick
@@ -13,6 +14,13 @@ class giocatore:
     def get_c_socket(self):
         return self.c_socket
     
+    def aggiungi_carta(self,card):
+        self.mazzo.append(card)
+        self.imposta_numero_carte(len(self.mazzo))
+
+    def imposta_mazzo(self,cards):
+        self.mazzo=cards
+        self.imposta_numero_carte(len(self.mazzo))
 
     def imposta_numero_carte(self, nuovo_numero_carte):
         self.numero_carte = nuovo_numero_carte

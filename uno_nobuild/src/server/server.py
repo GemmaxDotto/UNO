@@ -52,13 +52,22 @@ def handle_client(client_socket, shared_message, shutdown_event):
                      
             elif game==True and received_message.strip().split(";")[0]=="game":
                 for numero in range(clients):
-                    conferma_message=create_seven()
+                    cards=create_seven()
+                    conferma_message=cards
                     print(conferma_message)
-                    giocatori[numero].imposta_numero_carte(7)
+                    giocatori[numero].imposta_mazzo(cards)
                     socketTemp=giocatori[numero].get_c_socket()
                     socketTemp.sendall(conferma_message.encode())
-                    
-               #  shared_message.set(received_message)
+            
+            elif game==True and received_message.strip().split(";")[0]=="pesca":
+                card_pescata = pesca_carta()
+                nickClient = received_message.strip().split(";")[1]
+                giocatoreClient,pos = searchClient(nickClient)
+
+                giocatoreClient.aggiungi_carta(card_pescata)                
+
+                giocatoreClient.get_c_socket.sendall(conferma_message.encode())
+                
                 
             else:
                 altro_message = "err"
@@ -82,7 +91,11 @@ def create_seven():
       cards+=card+";"
       mazzo_temp.remove(card)
     return cards
-     
+
+def pesca_carta():
+    card = mazzo_temp[-1]
+    mazzo_temp.pop()
+    return card
   
 
 
@@ -104,6 +117,14 @@ def crea_mazzo_uno():
 
     return mazzo
 
+def searchClient(nickClient):
+    i = 0
+    for giocatore in giocatori:
+        if giocatore.get_nick == nickClient:
+            return giocatore,i
+        i+=1
+        
+    return None,None
 
       
 def StartGame():
