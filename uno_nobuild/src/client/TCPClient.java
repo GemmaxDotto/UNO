@@ -59,10 +59,11 @@ public class TCPClient {
                     
                     String receivedMessage = line;
         
-                    if (receivedMessage != null && receivedMessage.equals("ok;start")) {
+                    if (receivedMessage != null && receivedMessage.split(";")[1].equals("start")) {
                        // break;
                        waiting.closeWaitWindow(() -> {
-                        // Altre operazioni dopo l'attesa...
+                        // Altre operazioni dopo l'attesa...]
+                        Startgame();
                    
                     });
                     }
@@ -81,14 +82,41 @@ public class TCPClient {
                    
                 }); */
 
-                sendMessage("Grazie a dio");
         
            
 
     }
-        
 
+    private void Startgame() {
+        sendMessage("game;");
+        String myCardString=receiveMessage();
+        UnoDeck myCards=new UnoDeck();
+        for(int i=0;i<7;i++)
+            myCards.addCards(fromString(myCardString.split(";")[i]));
         
+            //new UnoDeckGUI(myCards).setVisible(true);
+    }
+
+    // Metodo statico per creare una UnoCard da una stringa
+    public static UnoCard fromString(String cardString) {
+        if (cardString.length() < 2 || cardString.length() > 3) {
+            // La stringa deve essere di lunghezza 2 o 3 (ad es. "1V" o "DS")
+            throw new IllegalArgumentException("La stringa deve essere di lunghezza 2 o 3");
+        }
+
+        if (cardString.length() == 2) {
+            // Carta normale
+            int numero = Character.getNumericValue(cardString.charAt(0));
+            String colore = cardString.substring(1);
+            return new UnoCard(numero, colore, false);
+        } else {
+            // Carta speciale
+            String colore = cardString.substring(0, 1);
+            return new UnoCard(0, colore, true);
+        }
+    }
+
+
 
     public void sendMessage(String message) {
         output.println(message);

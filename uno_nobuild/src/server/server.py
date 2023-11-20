@@ -3,8 +3,9 @@ import random
 
 clients=0
 mazzo_uno=[]
+mazzo_temp=[]
 game=False
-
+giocatori=[]
 
 def handle_client(client_socket, shared_message, shutdown_event):
     try:
@@ -14,28 +15,41 @@ def handle_client(client_socket, shared_message, shutdown_event):
                 break
 
             received_message = data.decode()
-            parts = received_message.split(';')
-            print("Parti del messaggio:", parts)
+            #parts = received_message.strip().split(';')
+            #print("Parti del messaggio:", parts)
             
-            if received_message.split(';')[1].strip() == "start":
+            if received_message.strip().split(";")[1] == "start":
                 global clients
                 clients += 1
-                client_info = (client_socket, received_message.split(';')[0].strip())
-                global clientsInfo
-                clientsInfo.append(client_info)
-                conferma_message = "ok;start"+"\r\n";
+                nomeGiocatore = "giocatore" + str(clients)
+                nuovo_giocatore = giocatore(nomeGiocatore, 0, client_socket,clients)
+                giocatori.append(nuovo_giocatore)
+                conferma_message = "ok;start;"+str(clients)+"\r\n";
                 """ timer_thread = MyTimerThread(30000, StartGame)
                 timer_thread.start(); """
                 print(f"Invio: {conferma_message}")
                 client_socket.sendall(conferma_message.encode())
-                
+                global game
+                game=True 
+                if clients==1 :
+                 mazzo_uno = crea_mazzo_uno()
+                 global mazzo_temp
+                 mazzo_temp=mazzo_uno
+                 print(mazzo_uno)
                 # Setta la variabile condivisa
-                shared_message.set(received_message)
-            elif game==True:
-                # Esempio di utilizzo
-                mazzo_uno = crea_mazzo_uno()
-                print(mazzo_uno)
-                shared_message.set(received_message)
+                # shared_message.set(received_message)
+               
+                     
+            elif game==True and received_message.strip().split(";")[0]=="game":
+                for numero in range(clients):
+                    conferma_message=create_seven()
+                    print(conferma_message)
+                    giocatori[numero].imposta_numero_carte(7)
+                    socketTemp=giocatori[numero].get_c_socket()
+                    socketTemp.sendall(conferma_message.encode())
+                    
+               #  shared_message.set(received_message)
+                
             else:
                 altro_message = "err"
                 client_socket.sendall(altro_message.encode())
@@ -48,7 +62,44 @@ def handle_client(client_socket, shared_message, shutdown_event):
 
     finally:
         client_socket.close()
-      
+ 
+def create_seven(): 
+    cards=""   
+    
+    for numero in range(7):
+      card=random.choice(mazzo_temp)
+      cards+=card+";"
+      mazzo_temp.remove(card)
+    return cards
+     
+    
+    
+class giocatore:
+    def __init__(self, nick, numero_carte,c_socket,clients_id):
+        self.nick = nick
+        self.numero_carte = numero_carte
+        self.c_socket=c_socket
+        self.clients_id=clients_id
+
+    def get_nick(self):
+        return self.nick
+
+    def get_numero_carte(self):
+        return self.numero_carte
+
+    def get_c_socket(self):
+        return self.c_socket
+    
+    def get_clients_id(self):
+        return self.clients_id
+    
+
+    def imposta_numero_carte(self, nuovo_numero_carte):
+        self.numero_carte = nuovo_numero_carte
+
+
+    
+
 
 def crea_mazzo_uno():
     colori = ['R', 'G', 'B', 'V']  # Rosso, Verde, Blu, Verde
@@ -130,6 +181,7 @@ class MyTimerThread(threading.Thread):
             self.target_function()
 
 # Funzione da eseguire quando il timer scatta
+
 
 
 

@@ -1,13 +1,18 @@
 class giocatore:
-    def __init__(self, nick, numero_carte):
+    def __init__(self, nick, numero_carte,c_socket):
         self.nick = nick
         self.numero_carte = numero_carte
+        self.c_socket=c_socket
 
-    def ottieni_nick(self):
+    def get_nick(self):
         return self.nick
 
-    def ottieni_numero_carte(self):
+    def get_numero_carte(self):
         return self.numero_carte
+
+    def get_c_socket(self):
+        return self.c_socket
+    
 
     def imposta_numero_carte(self, nuovo_numero_carte):
         self.numero_carte = nuovo_numero_carte
