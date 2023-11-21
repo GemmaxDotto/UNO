@@ -50,7 +50,9 @@ public class ClientGUI extends JFrame {
         // Aggiungi le carte del giocatore principale al tuo mazzo
         for (UnoCard unoCard : Game.myCards) {
             unoDeck.addCards(unoCard);
-            playerCards.add(new CardComponent(unoCard)); // Aggiungi le carte del giocatore principale
+            playerCards.add(new CardComponent(unoCard,Game)); // Aggiungi le carte del giocatore principale
+            unoCard.setIconFromImage(unoCard.getImagePath());
+            System.out.println("Percorso immagine: " + unoCard.getImagePath());
         }
 
         // Aggiungi le carte del giocatore principale nella parte inferiore del pannello
@@ -72,15 +74,15 @@ public class ClientGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Aggiungi qui il codice da eseguire quando il pulsante viene cliccato
-                unoDeck.addCards(new UnoCard(1, "R", false));
+                //unoDeck.addCards(new UnoCard(1, "R", false));
                 cardPanel.updateCards(); // Aggiorna il pannello delle carte
             }
         });
         addButton.setPreferredSize(new Dimension(10, 30)); // Imposta le dimensioni desiderate
-        CardComponent CenterCard=new CardComponent(Game.getCenterCard());
+       // CardComponent CenterCard=new CardComponent(Game.getCenterCard());
         
         // Aggiungi il pulsante al centro nella parte inferiore del pannello
-        gameTablePanel.add(CenterCard, BorderLayout.CENTER);
+        //gameTablePanel.add(CenterCard, BorderLayout.CENTER);
         // Aggiungi il pulsante al centro nella parte inferiore del pannello
         gameTablePanel.add(addButton, BorderLayout.BEFORE_FIRST_LINE);
 
@@ -114,15 +116,9 @@ public class ClientGUI extends JFrame {
         JButton unoButton = new JButton("UNO");
         chatPanel.add(unoButton);
 
-
-        
-
-
-
-
         // Creazione di carte per l'avversario (da personalizzare)
         ArrayList<CardComponent> opponentCards = new ArrayList<>();
-        opponentCards.add(new CardComponent(new UnoCard(0, "V", false))); // Aggiungi le carte dell'avversario
+        //opponentCards.add(new CardComponent(new UnoCard(0, "V", false))); // Aggiungi le carte dell'avversario
 
 
         // Aggiungi le carte dell'avversario nella parte superiore del pannello delle

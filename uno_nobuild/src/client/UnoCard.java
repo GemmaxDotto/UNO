@@ -1,11 +1,15 @@
+import java.awt.Image;
+import java.net.URL;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 public class UnoCard extends JButton{
-    private int numero;
+    private String numero;
     private String colore;
     private boolean isSpeciale;
 
-    public void setNumero(int numero) {
+    public void setNumero(String numero) {
         this.numero = numero;
     }
 
@@ -17,18 +21,28 @@ public class UnoCard extends JButton{
         this.isSpeciale = isSpeciale;
     }
 
-    public UnoCard(int numero, String colore, boolean isSpeciale) {
+    public UnoCard(String numero, String colore, boolean isSpeciale) {
         this.numero = numero;
         this.colore = colore;
         this.isSpeciale = isSpeciale;
     }
 
-    public String getImage(){
+    public String getImagePath(){
         
-        if(isSpeciale()==true)
-        return "uno_nobuild//src//client//carte//"+getNumero()+getColore()+"_1.png";
-        else
-        return "uno_nobuild//src//client//carte//"+getNumero()+getColore()+"_0.png";
+        String imagePath;
+        if (isSpeciale) {
+            imagePath = "uno_nobuild/src/client/carte/" + getNumero() + getColore() + "_1.png";
+        } else {
+            imagePath = "uno_nobuild/src/client/carte/" + getNumero() + getColore() + "_0.png";
+        }
+
+        return imagePath;
+    }
+
+    public void setIconFromImage(String imagePath) {
+        ImageIcon icon = new ImageIcon(imagePath);
+        Image image = icon.getImage().getScaledInstance(50, 70, Image.SCALE_SMOOTH);
+        setIcon(new ImageIcon(image));
     }
 
     @Override
@@ -37,7 +51,7 @@ public class UnoCard extends JButton{
     }
 
 
-    public int getNumero() {
+    public String getNumero() {
         return numero;
     }
 

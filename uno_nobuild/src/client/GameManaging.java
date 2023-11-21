@@ -12,6 +12,7 @@ public class GameManaging {
     TCPClient client;
     ArrayList<UnoCard> myCards=new ArrayList<UnoCard>();
     ArrayList<UnoCard> carteButtate=new ArrayList<UnoCard>();
+    static UnoCard tempCard;
 
     public ArrayList<UnoCard> getMyCards() {
         return myCards;
@@ -116,16 +117,52 @@ public class GameManaging {
             // Carta normale
             int numero = Character.getNumericValue(cardString.charAt(0));
             String colore = cardString.substring(1);
-            return new UnoCard(numero, colore, false);
+            return new UnoCard(Integer.toString(numero), colore, false);
         } else {
             // Carta speciale
-            String colore = "none"; //cardString.substring(0, 1);
-            return new UnoCard(0, colore, true);
+            String colore=""; //cardString.substring(0, 1);
+            String num="";
+            switch (cardString.split("-")[0]) {
+                case "Skip":
+                    colore=cardString.split("-")[1];
+                    num="S";
+                    break;
+                case "Reverse":
+                    colore=cardString.split("-")[1];
+                    num="R";
+                    break;
+                case "Draw Two":
+                    colore=cardString.split("-")[1];
+                    num="T";
+                    break;
+                case "Draw Four":
+                    colore="D";
+                    num="F";
+                    break;
+                case "Change Color":
+                    colore="C";
+                    num="C";
+                    break;
+
+                default:
+                    break;
+            }
+            return new UnoCard(num, colore, true);
         }
     }
 
     public UnoCard getCenterCard() {  
         
-        return carteButtate.get(carteButtate.size());
+        return null;
+       // return carteButtate.get(carteButtate.size());
+        
+    }
+
+    public static void receivedCard(){
+      //  client.sendMessage(tempCard.toString());
+    }
+
+    public void onCardClicked(UnoCard card) {
+        System.out.println("CIAOOOO");
     }
 }
