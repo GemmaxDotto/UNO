@@ -31,7 +31,7 @@ def handle_client(client_socket, shared_message, shutdown_event):
                 nuovo_giocatore = player.giocatore(nomeGiocatore,0,client_socket)
 
                 giocatori.append(nuovo_giocatore)
-                conferma_message = "ok;start;"+str(clients)+"\r\n";
+                conferma_message = "ok;start;"+str(clients)+"\r\n"
 
                 #timer_thread = myt.MyTimerThread(30000, StartGame)
                 #timer_thread.start();
@@ -53,11 +53,11 @@ def handle_client(client_socket, shared_message, shutdown_event):
             elif game==True and received_message.strip().split(";")[0]=="game":
                 for numero in range(clients):
                     cards=create_seven()
-                    conferma_message=cards
+                    conferma_message=cards+"\r\n"
                     print(conferma_message)
                     giocatori[numero].imposta_mazzo(cards)
-                    socketTemp=giocatori[numero].get_c_socket()
-                    socketTemp.sendall(conferma_message.encode())
+                    #socketTemp=giocatori[numero].get_c_socket()
+                    client_socket.sendall(conferma_message.encode())
             
             elif game==True and received_message.strip().split(";")[0]=="pesca":
                 card_pescata = pesca_carta()
