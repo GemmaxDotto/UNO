@@ -10,6 +10,7 @@ mazzo_uno=[]
 mazzo_temp=[]
 game=False
 giocatori=[]
+mazzo_tavolo=[]
 
 def handle_client(client_socket, shared_message, shutdown_event):
     try:
@@ -26,7 +27,8 @@ def handle_client(client_socket, shared_message, shutdown_event):
             if received_message.strip().split(";")[1] == "start":
                 global clients
                 clients += 1
-                nomeGiocatore = "giocatore" + str(clients)
+                nomeGiocatore=received_message.strip().split(";")[0]
+                #nomeGiocatore = "giocatore" + str(clients)
                 #nuovo_giocatore = player.giocatore(nomeGiocatore,0,client_socket,clients)
                 nuovo_giocatore = player.giocatore(nomeGiocatore,0,client_socket)
 
@@ -53,22 +55,38 @@ def handle_client(client_socket, shared_message, shutdown_event):
             elif game==True and received_message.strip().split(";")[0]=="game":
                 for numero in range(clients):
                     cards=create_seven()
-                    conferma_message=cards+"\r\n"
+                    conferma_message=nickClient + ";" +cards
                     print(conferma_message)
                     giocatori[numero].imposta_mazzo(cards)
                     #socketTemp=giocatori[numero].get_c_socket()
                     client_socket.sendall(conferma_message.encode())
             
-            elif game==True and received_message.strip().split(";")[0]=="pesca":
-                card_pescata = pesca_carta()
-                nickClient = received_message.strip().split(";")[1]
+            elif game==True and received_message.strip().split(";")[1]=="pesca":
+                nickClient = received_message.strip().split(";")[0]
                 giocatoreClient,pos = searchClient(nickClient)
+                card_pescata = pesca_carta()
 
                 giocatoreClient.aggiungi_carta(card_pescata)                
-
+                conferma_message = nickClient + ";" + "mazzo" + ";" +giocatoreClient.getMazzoToString()
                 giocatoreClient.get_c_socket.sendall(conferma_message.encode())
                 
+            elif game==True and received_message.strip().split(";")[1]=="lascia":
+                card_lasciata = received_message.strip().split(";")[2]
+                lasciaCarta(card_lasciata)
+
+                nickClient = received_message.strip().split(";")[0]
+                giocatoreClient,pos = searchClient(nickClient) 
+
+                if(giocatoreClient.getNumeroCarte()==1 & received_message.strip().split(";")[3]!="1"):
+                    for i in range(0,3):
+                        giocatoreClient.aggiungi_carta(pesca_carta())
+
                 
+                conferma_message = nickClient + ";" + "mazzo" + ";" +giocatoreClient.getMazzoToString()            
+                
+                shared_message.set()
+                giocatoreClient.get_c_socket.sendall(conferma_message.encode())
+
             else:
                 altro_message = "err"
                 client_socket.sendall(altro_message.encode())
@@ -82,6 +100,11 @@ def handle_client(client_socket, shared_message, shutdown_event):
     finally:
         client_socket.close()
  
+
+def lasciaCarta(carta,posGiocatore):
+    mazzo_tavolo.append(carta)
+    giocatori[posGiocatore].rimuoviCarta(carta)
+
 
 def create_seven(): 
     cards=""   
