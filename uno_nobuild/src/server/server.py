@@ -105,12 +105,13 @@ def crea_mazzo_uno():
 
     carte_numerate = [f"{numero}{colore}" for colore in colori for numero in numeri]
 
-    carte_speciali = ['Skip', 'Reverse', 'Draw Two']
+    carte_speciali = ['Skip-', 'Reverse-', 'Draw Two-']
 
     mazzo = carte_numerate * 2  # Doppie carte numerate
     mazzo += [f"{speciale}{colore}" for colore in colori for speciale in carte_speciali] * 2  # Doppie carte speciali
 
     mazzo += ['Draw Four'] * 4  # Quattro carte Wild e Wild Draw Four
+    mazzo += ['Change Color'] * 4  # Quattro carte Wild e Wild Draw Four
 
     # Mescola il mazzo
     random.shuffle(mazzo)
