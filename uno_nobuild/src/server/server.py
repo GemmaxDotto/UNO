@@ -55,7 +55,7 @@ def handle_client(client_socket, shared_message, shutdown_event):
             elif game==True and received_message.strip().split(";")[0]=="game":
                 for numero in range(clients):
                     cards=create_seven()
-                    conferma_message=nickClient + ";" +cards
+                    conferma_message=nickClient + ";" +cards + "\r\n"
                     print(conferma_message)
                     giocatori[numero].imposta_mazzo(cards)
                     #socketTemp=giocatori[numero].get_c_socket()
