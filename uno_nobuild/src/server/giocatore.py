@@ -18,12 +18,33 @@ class giocatore:
         self.mazzo.append(card)
         self.imposta_numero_carte(len(self.mazzo))
 
+    def rimuovi_carta(self,card):
+        self.mazzo.remove(card)
+        self.imposta_numero_carte(len(self.mazzo))
+
     def imposta_mazzo(self,cards):
         self.mazzo=cards
         self.imposta_numero_carte(len(self.mazzo))
 
+    
     def imposta_numero_carte(self, nuovo_numero_carte):
         self.numero_carte = nuovo_numero_carte
+
+    def get_numero_carte(self):
+        return self.numero_carte
+
+    def getMazzoToString(self):
+        output = ""
+        for card in self.mazzo:
+            output+=card+","
+        return output
+
+    def getMazzo(self):
+        return self.mazzo
+
+    
+
+    
 
 
 """ # Esempio di utilizzo della classe Giocatore
