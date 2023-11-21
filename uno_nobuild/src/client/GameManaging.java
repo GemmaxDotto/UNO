@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.sql.Array;
 import java.util.ArrayList;
 
@@ -15,7 +16,7 @@ public class GameManaging {
         return myCards;
     }
 
-    public GameManaging() {
+    public GameManaging()  {
         client = new TCPClient("localhost", 666);
         Join();
     }
@@ -51,14 +52,31 @@ public class GameManaging {
   
         System.out.println("Received message: " + line);
 
-        if (receivedMessage != null && receivedMessage.split(";")[1].equals("start")) {
-            System.out.println("Entering Startgame");
-            //waiting.closeWaitWindow(() -> {
-                // Altre operazioni dopo l'attesa...
-                client.sendMessage("game;");
-                Startgame();
-            //});
+        if (receivedMessage != null) {
+            String[] messageParts = receivedMessage.split(";");
+            if (messageParts.length > 1 && messageParts[1].equals("start")) {
+                System.out.println("Entering Startgame");
+                client.sendMessage("game;1");
+        
+                String myCardString = client.receiveMessage();
+                if (myCardString != null) {
+                    Startgame(myCardString);
+                } else {
+                    // Gestione del caso in cui la ricezione del messaggio fallisce
+                    System.err.println("Errore: Nessun messaggio ricevuto dopo game;");
+                    // Potresti decidere di gestire questa situazione in modo specifico, ad esempio riprovando o gestendo l'errore in altro modo.
+                }
+            } else {
+                // Gestione del caso in cui il messaggio ricevuto non corrisponde a "start"
+                System.err.println("Il messaggio ricevuto non è 'start'");
+                // Potresti decidere di gestire questa situazione in modo specifico, ad esempio ignorando il messaggio o inviando una risposta.
+            }
+        } else {
+            // Gestione del caso in cui receivedMessage è null
+            System.err.println("receivedMessage è null");
+            // Potresti decidere di gestire questa situazione in modo specifico, ad esempio riprovando o gestendo l'errore in altro modo.
         }
+        
 
         // Aggiorna la finestra di attesa (puoi anche farlo solo quando ricevi "no")
         // SwingUtilities.invokeLater(waiting::showWaitWindow);
@@ -76,21 +94,22 @@ public class GameManaging {
 
     }
 
-    private void Startgame() {
+    private void Startgame(String myCardString) {
 
-        String myCardString = client.receiveMessage();
+        String[] carte=myCardString.strip().split(";");
+
         for (int i = 0; i < 7; i++)
-            myCards.add(fromString(myCardString.split(";")[i]));
+            myCards.add(fromString(carte[i]));
         // setCards(myCards);
 
     }
 
     // Metodo statico per creare una UnoCard da una stringa
     public static UnoCard fromString(String cardString) {
-        if (cardString.length() < 2 || cardString.length() > 3) {
+        /* if (cardString.length() < 2 || cardString.length() > 3) {
             // La stringa deve essere di lunghezza 2 o 3 (ad es. "1V" o "DS")
             throw new IllegalArgumentException("La stringa deve essere di lunghezza 2 o 3");
-        }
+        } */
 
         if (cardString.length() == 2) {
             // Carta normale

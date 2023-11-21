@@ -39,9 +39,11 @@ public class TCPClient {
             // Leggi il messaggio dal socket
             String receivedMessage = input.readLine();
 
-
             // Rimuovi spazi bianchi iniziali e finali
-            return receivedMessage.trim();
+            if(receivedMessage==null)
+             return null;
+            else
+             return receivedMessage.trim();
 
         } catch (IOException e) {
             e.printStackTrace();

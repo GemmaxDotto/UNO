@@ -9,13 +9,17 @@ public class ClientGUI extends JFrame {
 
     // private wait waiting;
     GameManaging Game;
-    private UnoDeck unoDeck;
+    private UnoDeck unoDeck=new UnoDeck();
     private CardPanel cardPanel;
 
     public ClientGUI() throws IOException {
         super("Uno Game Client");
+
         
+
         Game=new GameManaging();
+
+        //while(Game.myCards==null){}
 
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -24,7 +28,7 @@ public class ClientGUI extends JFrame {
             e.printStackTrace();
         }
 
-        // Aggiungi alcune carte di UNO per esempio
+         // Aggiungi alcune carte di UNO per esempio
         for (UnoCard unoCard : Game.myCards) {
             unoDeck.addCards(unoCard);
         }
@@ -47,7 +51,7 @@ public class ClientGUI extends JFrame {
                 cardPanel.updateCards();
             }
         });
-        add(addButton, BorderLayout.SOUTH);
+        add(addButton, BorderLayout.SOUTH); 
         
         
 
@@ -116,6 +120,8 @@ public class ClientGUI extends JFrame {
 
         pack();
         setVisible(true);
+
+        
 
     }
 
