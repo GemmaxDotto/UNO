@@ -23,6 +23,14 @@ public class UnoCard extends JButton{
         this.isSpeciale = isSpeciale;
     }
 
+    public String getImage(){
+        
+        if(isSpeciale()==true)
+        return "uno_nobuild//src//client//carte//"+getNumero()+getColore()+"_1.png";
+        else
+        return "uno_nobuild//src//client//carte//"+getNumero()+getColore()+"_0.png";
+    }
+
     @Override
     public String toString() {
         return isSpeciale ? colore : numero + colore;

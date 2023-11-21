@@ -1,25 +1,31 @@
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
+import org.w3c.dom.events.MouseEvent;
 
 public class ClientGUI extends JFrame {
 
-    // private wait waiting;
-    GameManaging Game;
-    private UnoDeck unoDeck=new UnoDeck();
+    private GameManaging Game;
+    private UnoDeck unoDeck = new UnoDeck();
     private CardPanel cardPanel;
 
     public ClientGUI() throws IOException {
         super("Uno Game Client");
-
-        
-
-        Game=new GameManaging();
-
-        //while(Game.myCards==null){}
 
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -28,104 +34,124 @@ public class ClientGUI extends JFrame {
             e.printStackTrace();
         }
 
-         // Aggiungi alcune carte di UNO per esempio
+        Game = new GameManaging();
+
+        /// Creazione del pannello per il tavolo da gioco
+        JPanel gameTablePanel = new JPanel(new BorderLayout());
+        gameTablePanel.setBackground(new Color(255, 255, 153)); // Giallo chiaro
+
+        // Creazione del CardPanel e assegnamento alla variabile di istanza cardPanel
+        cardPanel = new CardPanel(unoDeck);
+        cardPanel.setBackground(new Color(255, 255, 153)); // Imposta lo sfondo giallo
+
+        // Creazione di carte per il giocatore principale (da personalizzare)
+        ArrayList<CardComponent> playerCards = new ArrayList<>();
+
+        // Aggiungi le carte del giocatore principale al tuo mazzo
         for (UnoCard unoCard : Game.myCards) {
             unoDeck.addCards(unoCard);
+            playerCards.add(new CardComponent(unoCard)); // Aggiungi le carte del giocatore principale
         }
 
-        cardPanel = new CardPanel(unoDeck);
+        // Aggiungi le carte del giocatore principale nella parte inferiore del pannello
+        // delle carte
+        cardPanel.addCardsToBottom(playerCards);
 
-        // Aggiungi il CardPanel al tuo frame
-        add(cardPanel, BorderLayout.CENTER);
+        // Aggiorna il pannello delle carte
+        cardPanel.updateCards();
 
-        // Aggiungi un pulsante per simulare l'aggiunta di una carta (da modificare secondo le tue esigenze)
+
+
+        // Aggiungi il CardPanel al pannello del tavolo da gioco nella parte superiore
+        gameTablePanel.add(cardPanel, BorderLayout.SOUTH);
+
+        // Crea il bottone "Aggiungi Carta"
         JButton addButton = new JButton("Aggiungi Carta");
+        // Aggiungi un listener per gestire l'evento di clic sul pulsante
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Simula l'aggiunta di una carta al mazzo
-                //unoDeck.addCards(new UnoCard(UnoCard.Color.RED, UnoCard.Value.ONE));
+                // Aggiungi qui il codice da eseguire quando il pulsante viene cliccato
                 unoDeck.addCards(new UnoCard(1, "R", false));
-
-                // Aggiorna il pannello delle carte
-                cardPanel.updateCards();
+                cardPanel.updateCards(); // Aggiorna il pannello delle carte
             }
         });
-        add(addButton, BorderLayout.SOUTH); 
+        addButton.setPreferredSize(new Dimension(10, 30)); // Imposta le dimensioni desiderate
+        CardComponent CenterCard=new CardComponent(Game.getCenterCard());
         
-        
+        // Aggiungi il pulsante al centro nella parte inferiore del pannello
+        gameTablePanel.add(CenterCard, BorderLayout.CENTER);
+        // Aggiungi il pulsante al centro nella parte inferiore del pannello
+        gameTablePanel.add(addButton, BorderLayout.BEFORE_FIRST_LINE);
 
-        // Creazione del pannello per il tavolo da gioco
-        JPanel gameTablePanel = new JPanel();
-        gameTablePanel.setBackground(new Color(255, 255, 153)); // Giallo chiaro
+         add(gameTablePanel, BorderLayout.CENTER);
+        // Aggiungi il pannello del tavolo da gioco al tuo JFrame
+       
 
         // Creazione del pannello per la chat
+        JPanel chatPanel = new JPanel();
+        chatPanel.setLayout(new BoxLayout(chatPanel, BoxLayout.Y_AXIS));
+
         JTextArea chatArea = new JTextArea();
         chatArea.setEditable(false);
         chatArea.setLineWrap(true);
         JScrollPane chatScrollPane = new JScrollPane(chatArea);
+        chatPanel.add(chatScrollPane);
 
-        // Creazione della text area per scrivere nella chat
         JTextField chatInputField = new JTextField();
+        chatPanel.add(chatInputField);
 
-        // Creazione del pulsante "Send" per inviare messaggi nella chat
         JButton sendButton = new JButton("Send");
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Aggiungi il testo della text field alla chat
                 chatArea.append("you:" + chatInputField.getText() + "\n");
-                // Pulisci la text field dopo l'invio
                 chatInputField.setText("");
             }
         });
+        chatPanel.add(sendButton);
 
-        // Creazione del pannello per il pulsante "UNO"
         JButton unoButton = new JButton("UNO");
+        chatPanel.add(unoButton);
+
+
+        
+
+
+
+
+        // Creazione di carte per l'avversario (da personalizzare)
+        ArrayList<CardComponent> opponentCards = new ArrayList<>();
+        opponentCards.add(new CardComponent(new UnoCard(0, "V", false))); // Aggiungi le carte dell'avversario
+
+
+        // Aggiungi le carte dell'avversario nella parte superiore del pannello delle
+        // carte
+        cardPanel.addCardsToTop(opponentCards);
 
         // Creazione del layout principale
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
 
-        // Configurazione del layout
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
-        // Aggiungi il pannello delle carte al layout
-        layout.setHorizontalGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(gameTablePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-                                Short.MAX_VALUE)
-                        .addComponent(chatScrollPane, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-                                Short.MAX_VALUE)
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(chatInputField)
-                                .addComponent(sendButton))
-                        .addComponent(unoButton)
-      
-        ));
+        layout.setHorizontalGroup(layout.createParallelGroup()
+                .addComponent(gameTablePanel)
+                .addComponent(chatPanel));
 
         layout.setVerticalGroup(layout.createSequentialGroup()
-                .addComponent(gameTablePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(chatScrollPane, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(chatInputField)
-                        .addComponent(sendButton))
-                .addComponent(unoButton));
+                .addComponent(gameTablePanel)
+                .addComponent(chatPanel));
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1100, 900); // Imposta le dimensioni della finestra
         setLocationRelativeTo(null); // Centra la finestra
-
-
         pack();
         setVisible(true);
-
-        
-
     }
 
-  
+    // Listener per il clic delle carte
 
 
 }

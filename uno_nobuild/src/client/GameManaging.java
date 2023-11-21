@@ -11,6 +11,7 @@ import javax.swing.SwingUtilities;
 public class GameManaging {
     TCPClient client;
     ArrayList<UnoCard> myCards=new ArrayList<UnoCard>();
+    ArrayList<UnoCard> carteButtate=new ArrayList<UnoCard>();
 
     public ArrayList<UnoCard> getMyCards() {
         return myCards;
@@ -118,8 +119,13 @@ public class GameManaging {
             return new UnoCard(numero, colore, false);
         } else {
             // Carta speciale
-            String colore = cardString.substring(0, 1);
+            String colore = "none"; //cardString.substring(0, 1);
             return new UnoCard(0, colore, true);
         }
+    }
+
+    public UnoCard getCenterCard() {  
+        
+        return carteButtate.get(carteButtate.size());
     }
 }

@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 public class CardPanel extends JPanel {
     private UnoDeck unoDeck;
@@ -28,7 +29,35 @@ public class CardPanel extends JPanel {
         repaint();     // Ridisegna il pannello
     }
 
-    // Listener per il clic delle carte
+    // Metodo per aggiungere nuove carte nella parte superiore
+    public void addCardsToTop(ArrayList<CardComponent> newCards) {
+        JPanel newCardsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    
+        for (CardComponent cardComponent : newCards) {
+            newCardsPanel.add(cardComponent);
+        }
+    
+        add(newCardsPanel, 0);  // Aggiungi il nuovo pannello nella parte superiore
+        revalidate();  // Aggiorna il layout
+        repaint();     // Ridisegna il pannello
+    }
+
+    // Nel tuo pannello delle carte (CardPanel)
+public void addCardsToBottom(ArrayList<CardComponent> newCards) {
+    JPanel newCardsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+    for (CardComponent cardComponent : newCards) {
+        newCardsPanel.add(cardComponent);
+    }
+
+    add(newCardsPanel);  // Aggiungi il nuovo pannello alla fine
+    revalidate();  // Aggiorna il layout
+    repaint();     // Ridisegna il pannello
+}
+
+
+
+     // Listener per il clic delle carte
     private class CardClickListener extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -38,7 +67,8 @@ public class CardPanel extends JPanel {
                 UnoCard clickedCard = ((CardComponent) clickedComponent).getCard();
                 // Fai qualcosa con la carta cliccata
                 System.out.println("Hai cliccato su: " + clickedCard);
+                
             }
         }
-    }
+    } 
 }
