@@ -47,7 +47,7 @@ public class UnoCard extends JButton{
 
     @Override
     public String toString() {
-        return isSpeciale ? colore : numero + colore;
+        return numero + colore;
     }
 
 
