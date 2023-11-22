@@ -58,7 +58,7 @@ public class GUIClientSTART extends JFrame {
             dispose();
 
             try {
-                new ClientGUI().setVisible(true);;
+                new ClientGUI().setVisible(true);
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
