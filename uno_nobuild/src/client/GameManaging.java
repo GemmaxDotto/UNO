@@ -13,6 +13,8 @@ public class GameManaging {
     ArrayList<UnoCard> myCards=new ArrayList<UnoCard>();
     ArrayList<UnoCard> carteButtate=new ArrayList<UnoCard>();
     static UnoCard tempCard;
+    boolean on=true;
+    String nickNameString;
 
     public ArrayList<UnoCard> getMyCards() {
         return myCards;
@@ -26,7 +28,7 @@ public class GameManaging {
     public void Join() {
 
         NickNameWindow nicknameW = new NickNameWindow();
-        String nickNameString = nicknameW.showInputDialog();
+        nickNameString = nicknameW.showInputDialog();
 
         String message = nickNameString + ";start";
 
@@ -60,7 +62,7 @@ public class GameManaging {
                 System.out.println("Entering Startgame");
                 client.sendMessage("game;1");
         
-                String myCardString = client.receiveMessage();
+                String myCardString = client.receiveMessage().split(";")[1];
                 if (myCardString != null) {
                     Startgame(myCardString);
                 } else {
@@ -78,7 +80,13 @@ public class GameManaging {
             System.err.println("receivedMessage è null");
             // Potresti decidere di gestire questa situazione in modo specifico, ad esempio riprovando o gestendo l'errore in altro modo.
         }
+
         
+        client.sendMessage("game;first");
+        String mess=client.receiveMessage();
+        tempCard=fromString(mess);
+
+
 
         // Aggiorna la finestra di attesa (puoi anche farlo solo quando ricevi "no")
         // SwingUtilities.invokeLater(waiting::showWaitWindow);
@@ -98,7 +106,7 @@ public class GameManaging {
 
     private void Startgame(String myCardString) {
 
-        String[] carte=myCardString.strip().split(";");
+        String[] carte=myCardString.strip().split("-");
 
         for (int i = 0; i < 7; i++)
             myCards.add(fromString(carte[i]));
@@ -122,17 +130,17 @@ public class GameManaging {
             // Carta speciale
             String colore=""; //cardString.substring(0, 1);
             String num="";
-            switch (cardString.split("-")[0]) {
+            switch (cardString.split("_")[0]) {
                 case "Skip":
-                    colore=cardString.split("-")[1];
+                    colore=cardString.split("_")[1];
                     num="S";
                     break;
                 case "Reverse":
-                    colore=cardString.split("-")[1];
+                    colore=cardString.split("_")[1];
                     num="R";
                     break;
                 case "Draw Two":
-                    colore=cardString.split("-")[1];
+                    colore=cardString.split("_")[1];
                     num="T";
                     break;
                 case "Draw Four":
@@ -151,10 +159,17 @@ public class GameManaging {
         }
     }
 
+    public void setCenterCard(UnoCard card) {  
+        
+        tempCard=card;
+       // return carteButtate.get(carteButtate.size());
+        
+    }
+
     public UnoCard getCenterCard() {  
         
-        return null;
-       // return carteButtate.get(carteButtate.size());
+        
+      return carteButtate.get(carteButtate.size());
         
     }
 
