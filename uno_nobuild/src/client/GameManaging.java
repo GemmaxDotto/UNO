@@ -60,7 +60,7 @@ public class GameManaging {
             String[] messageParts = receivedMessage.split(";");
             if (messageParts.length > 1 && messageParts[1].equals("start")) {
                 System.out.println("Entering Startgame");
-                client.sendMessage("game;1");
+                client.sendMessage("game;"+nickNameString);
         
                 String myCardString = client.receiveMessage().split(";")[1];
                 if (myCardString != null) {
@@ -82,9 +82,14 @@ public class GameManaging {
         }
 
         
-        client.sendMessage("game;first");
-        String mess=client.receiveMessage();
-        tempCard=fromString(mess);
+        client.sendMessage("CentralCard;first");
+        String mess = client.receiveMessage();
+        if (mess != null) {
+            tempCard = fromString(mess);
+        } else {
+            System.out.println("Errore durante la ricezione del messaggio.");
+        }
+        
 
 
 
