@@ -85,24 +85,31 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                 conferma_message = nickClient + ";" + "mazzo" + ";" +giocatoreClient.getMazzoToString()+ "\r\n"
                 msg.send_messages(nickClient,conferma_message,giocatori)
                 #giocatoreClient.c_socket.sendall(conferma_message.encode())
-                
             elif game==True and received_message.strip().split(";")[1]=="lascia":
                 card_lasciata = received_message.strip().split(";")[2]
-                #lasciaCarta(card_lasciata)
+                correct,speciale = checkIsValid(card_lasciata)
 
-                nickClient = received_message.strip().split(";")[0]
-                giocatoreClient,pos = searchClient(nickClient) 
+                #if correct_card or correct_speciale:
+                if True:
+                    lasciaCarta(card_lasciata)
 
-                if(giocatoreClient.getNumeroCarte()==1 & received_message.strip().split(";")[3]!="1"):
-                    for i in range(0,3):
-                        giocatoreClient.aggiungi_carta(pesca_carta())
+                    nickClient = received_message.strip().split(";")[0]
+                    giocatoreClient,pos = searchClient(nickClient) 
 
-                
-                conferma_message = nickClient + ";" + "mazzo" + ";" +giocatoreClient.getMazzoToString()+";ok"+ "\r\n"            
-                
-                shared_message.set()
-                msg.send_messages(nickClient,conferma_message,giocatori)
-                #giocatoreClient.c_socket.sendall(conferma_message.encode())
+                    if(giocatoreClient.getNumeroCarte()==1 & received_message.strip().split(";")[3]!="1"):
+                        for i in range(0,3):
+                            giocatoreClient.aggiungi_carta(pesca_carta())
+
+                    
+                    conferma_message = nickClient + ";" + "mazzo" + ";" +giocatoreClient.getMazzoToString()   
+
+                    if correct_speciale:
+                        msgSpeciale = getMsgSpeciale(card_lasciata)         
+                        shared_message.set(msg)
+                    msg.send_messages(nickClient,conferma_message,giocatori)
+                else:
+                    #carta non valida
+                    message = nickClient+";errore;carta_non_valida"
             
                 
 
@@ -119,6 +126,37 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
     finally:
         client_socket.close()
  
+def getMsgSpeciale(card):
+    return
+ 
+def checkIsValid(card_lasciata):
+    speciale = checkCartaSpeciale(card_lasciata)
+    correct = False
+
+    last_color = mazzo_tavolo[-1][1]
+    last_number = mazzo_tavolo[-1][0]
+
+
+    if speciale and card_lasciata.rfind("_"):
+        color_card_speciale = card_lasciata.split("_")[1]
+        if not color_card_speciale == last_color:
+            correct = False
+    elif speciale:
+        correct = speciale
+    else:   
+        number_card=card_lasciata[0]
+        color_card=card_lasciata[1]
+        
+        if number_card==last_number or color_card==last_color:
+            correct = True   
+        else:
+            correct = False 
+    return correct,speciale
+
+def checkCartaSpeciale(card):
+    if len(card)>2:
+        return True
+    return False
 
 def lasciaCarta(carta,posGiocatore):
     mazzo_tavolo.append(carta)
