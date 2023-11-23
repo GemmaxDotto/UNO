@@ -22,47 +22,5 @@ public class CardPanel extends JPanel {
 
     // Metodo per aggiornare la rappresentazione grafica delle carte
     // Nel metodo updateCards di CardPanel
-    public void updateCards() {
-        removeAll(); // Rimuovi tutte le carte attuali
-    
-        // Aggiungi le nuove carte
-        for (UnoCard card : game.myCards) {
-            //ImageIcon icon = new ImageIcon(card.getImagePath());
-            CardComponent cardComp=new CardComponent(card, game,GUI);
-            
-        
-    
-            add(cardComp);
-        }
-    
-        revalidate(); // Aggiorna il layout
-        repaint(); // Ridisegna il pannello
-    }
-    
-    // Metodo per aggiungere nuove carte nella parte superiore
-    public void addCardsToTop(ArrayList<CardComponent> newCards) {
-        JPanel newCardsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-
-        for (CardComponent cardComponent : newCards) {
-            newCardsPanel.add(cardComponent);
-        }
-
-        add(newCardsPanel, 0); // Aggiungi il nuovo pannello nella parte superiore
-        revalidate(); // Aggiorna il layout
-        repaint(); // Ridisegna il pannello
-    }
-
-    // Nel tuo pannello delle carte (CardPanel)
-    public void addCardsToBottom(ArrayList<CardComponent> newCards) {
-        JPanel newCardsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-
-        for (CardComponent cardComponent : newCards) {
-            newCardsPanel.add(cardComponent);
-        }
-
-        add(newCardsPanel); // Aggiungi il nuovo pannello alla fine
-        revalidate(); // Aggiorna il layout
-        repaint(); // Ridisegna il pannello
-    }
 
 }
