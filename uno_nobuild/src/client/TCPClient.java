@@ -38,7 +38,7 @@ public class TCPClient {
         try {
             // Leggi il messaggio dal socket
             String receivedMessage = input.readLine();
-
+            
             // Rimuovi spazi bianchi iniziali e finali
             if(receivedMessage==null)
              return null;
