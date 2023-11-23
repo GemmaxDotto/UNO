@@ -84,11 +84,9 @@ public class GameManaging {
         
         client.sendMessage("CentralCard;first");
         String mess = client.receiveMessage();
-        if (mess != null) {
-            tempCard = fromString(mess);
-        } else {
-            System.out.println("Errore durante la ricezione del messaggio.");
-        }
+         tempCard = fromString(mess);
+
+
         
 
 
