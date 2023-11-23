@@ -7,19 +7,24 @@ import java.awt.event.MouseAdapter;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JPanel;
 
 public class CardComponent extends JButton {
     private UnoCard card;
     GameManaging Game;
     ClientGUI GUI;
+    JPanel parentPanel;
+    
 
-    public CardComponent(UnoCard card, GameManaging Game,ClientGUI GUI) {
+    public CardComponent(UnoCard card, GameManaging Game, ClientGUI GUI) {
         this.card = card;
         // setText(card.toString()); // Usa toString() o un'altra rappresentazione
         // testuale della carta
         // setOpaque(true);
         // setBackground(Color.WHITE);
+        this.Game=Game;
         this.GUI=GUI;
+       
         ImageIcon originalIcon = new ImageIcon(card.getImagePath());
 
         // Ridimensiona l'immagine
@@ -41,10 +46,12 @@ public class CardComponent extends JButton {
         return card;
     }
 
+   
     private class CardClickListener extends MouseAdapter {
+        
+    
         @Override
         public void mouseClicked(java.awt.event.MouseEvent e) {
-            // Ottieni la carta associata a questo componente
             UnoCard clickedCard = getCard();
 
             // Invia un messaggio al server
@@ -52,12 +59,24 @@ public class CardComponent extends JButton {
             // sendMessageToServer()
             // che possa inviare il messaggio al server
             //&&clickedCard.toString().(Game.myCards)
-            if (Game != null&&!clickedCard.getColore().equals("K")) {
+            if (Game != null&&!clickedCard.getColore().equals("K")&&!clickedCard.toString().equals(GameManaging.tempCard.toString())) {
                 Game.client.sendMessage(Game.nickNameString+";"+"lascia;"+clickedCard.toString());
-                Game.setCenterCard(clickedCard);
+                String receString=Game.client.receiveMessage().strip().split(";")[3];
+                if(receString.equals("ok")){
+                    Game.setCenterCard(clickedCard);
                 Game.carteButtate.add(clickedCard);
                 Game.myCards.remove(clickedCard);
-                GUI.CardUpdateGUI();
+                GameManaging.tempCard=clickedCard;
+    
+
+                GUI.updatePlayerCards();
+                GUI.updateCentralCard();
+                }
+                
+                
+
+
+                
             }
             System.out.println("carta cliccata"+clickedCard);
         }
