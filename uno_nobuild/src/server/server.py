@@ -99,6 +99,7 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                     if(giocatoreClient.getNumeroCarte()==1 & received_message.strip().split(";")[3]!="1"):
                         for i in range(0,3):
                             giocatoreClient.aggiungi_carta(pesca_carta())
+<<<<<<< HEAD
 
                     
                     conferma_message = nickClient + ";" + "mazzo" + ";" +giocatoreClient.getMazzoToString()   
@@ -112,7 +113,19 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                     message = nickClient+";errore;carta_non_valida"
             
                 
+=======
+>>>>>>> de9cdacd77aeb25c5593b7e9f0d13f0db690ee28
 
+                    
+                    conferma_message = nickClient + ";" + "mazzo" + ";" +giocatoreClient.getMazzoToString()   
+
+                    if correct_speciale:
+                        msgSpeciale = getMsgSpeciale(card_lasciata)         
+                        shared_message.set(msg)
+                    giocatoreClient.get_c_socket.sendall(conferma_message.encode())
+                else:
+                    #carta non valida
+                    message = nickClient+";errore;carta_non_valida"
             else:
                 altro_message = "err"
                 client_socket.sendall(altro_message.encode())
@@ -125,10 +138,17 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
 
     finally:
         client_socket.close()
- 
+
+
 def getMsgSpeciale(card):
     return
  
+<<<<<<< HEAD
+def getMsgSpeciale(card):
+    return
+ 
+=======
+>>>>>>> de9cdacd77aeb25c5593b7e9f0d13f0db690ee28
 def checkIsValid(card_lasciata):
     speciale = checkCartaSpeciale(card_lasciata)
     correct = False
@@ -152,17 +172,23 @@ def checkIsValid(card_lasciata):
         else:
             correct = False 
     return correct,speciale
+<<<<<<< HEAD
 
 def checkCartaSpeciale(card):
     if len(card)>2:
         return True
     return False
+=======
+>>>>>>> de9cdacd77aeb25c5593b7e9f0d13f0db690ee28
 
 def lasciaCarta(carta,posGiocatore):
     mazzo_tavolo.append(carta)
     giocatori[posGiocatore].rimuoviCarta(carta)
 
-
+def checkCartaSpeciale(card):
+    if len(card)>2:
+        return True
+    return False
 def create_seven(): 
     cards=""   
     
