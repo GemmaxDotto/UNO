@@ -12,7 +12,7 @@ game=False
 giocatori=[]
 mazzo_tavolo=[]
 
-def handle_client(client_socket, shared_message, shutdown_event):
+def handle_client(client_socket, shared_message, shutdown_event, giocatori):
     try:
         while not shutdown_event.is_set():
             data = client_socket.recv(1024)
@@ -30,16 +30,20 @@ def handle_client(client_socket, shared_message, shutdown_event):
                 nomeGiocatore=received_message.strip().split(";")[0]
                 #nomeGiocatore = "giocatore" + str(clients)
                 #nuovo_giocatore = player.giocatore(nomeGiocatore,0,client_socket,clients)
+                
                 nuovo_giocatore = player.giocatore(nomeGiocatore,0,client_socket)
 
+               
                 giocatori.append(nuovo_giocatore)
                 conferma_message = "ok;start;"+str(clients)+"\r\n"
 
                 #timer_thread = myt.MyTimerThread(30000, StartGame)
                 #timer_thread.start();
 
+                print(f"Giocatori: {giocatori[0].get_nick()}")
                 print(f"Invio: {conferma_message}")
-                client_socket.sendall(conferma_message.encode())
+                msg.send_messages(nomeGiocatore,conferma_message,giocatori)
+                #client_socket.sendall(conferma_message.encode())
                 global game
                 game=True 
 
@@ -55,11 +59,22 @@ def handle_client(client_socket, shared_message, shutdown_event):
             elif game==True and received_message.strip().split(";")[0]=="game":
                 for numero in range(clients):
                     cards=create_seven()
-                    conferma_message="nickClient" + ";" +cards + "\r\n"
+                    conferma_message= received_message.strip().split(";")[1]+";" +cards + "\r\n"
                     print(conferma_message)
                     giocatori[numero].imposta_mazzo(cards)
                     #socketTemp=giocatori[numero].get_c_socket()
-                    client_socket.sendall(conferma_message.encode())
+                     #client_socket.sendall(conferma_message.encode())
+                    msg.send_messages(received_message.strip().split(";")[1],conferma_message,giocatori)
+                    
+                    
+            elif game==True and received_message.strip().split(";")[1]=="first":
+                card=random.choice(mazzo_temp)
+                conferma_message = card + "\r\n"   
+                
+                for numero in range(clients):
+                    msg.send_messages(giocatori[numero].get_nick(),conferma_message,giocatori)
+                
+                #client_socket.sendall(conferma_message.encode())
             
             elif game==True and received_message.strip().split(";")[1]=="pesca":
                 nickClient = received_message.strip().split(";")[0]
@@ -67,12 +82,13 @@ def handle_client(client_socket, shared_message, shutdown_event):
                 card_pescata = pesca_carta()
 
                 giocatoreClient.aggiungi_carta(card_pescata)                
-                conferma_message = nickClient + ";" + "mazzo" + ";" +giocatoreClient.getMazzoToString()
-                giocatoreClient.get_c_socket.sendall(conferma_message.encode())
+                conferma_message = nickClient + ";" + "mazzo" + ";" +giocatoreClient.getMazzoToString()+ "\r\n"
+                msg.send_messages(nickClient,conferma_message,giocatori)
+                #giocatoreClient.c_socket.sendall(conferma_message.encode())
                 
             elif game==True and received_message.strip().split(";")[1]=="lascia":
                 card_lasciata = received_message.strip().split(";")[2]
-                lasciaCarta(card_lasciata)
+                #lasciaCarta(card_lasciata)
 
                 nickClient = received_message.strip().split(";")[0]
                 giocatoreClient,pos = searchClient(nickClient) 
@@ -82,10 +98,13 @@ def handle_client(client_socket, shared_message, shutdown_event):
                         giocatoreClient.aggiungi_carta(pesca_carta())
 
                 
-                conferma_message = nickClient + ";" + "mazzo" + ";" +giocatoreClient.getMazzoToString()            
+                conferma_message = nickClient + ";" + "mazzo" + ";" +giocatoreClient.getMazzoToString()+";ok"+ "\r\n"            
                 
                 shared_message.set()
-                giocatoreClient.get_c_socket.sendall(conferma_message.encode())
+                msg.send_messages(nickClient,conferma_message,giocatori)
+                #giocatoreClient.c_socket.sendall(conferma_message.encode())
+            
+                
 
             else:
                 altro_message = "err"
@@ -145,11 +164,11 @@ def crea_mazzo_uno():
 def searchClient(nickClient):
     i = 0
     for giocatore in giocatori:
-        if giocatore.get_nick == nickClient:
-            return giocatore,i
-        i+=1
+        if giocatore.get_nick() == nickClient:
+            return giocatore, i
+        i += 1
         
-    return None,None
+    return None, None
 
       
 def StartGame():
@@ -180,10 +199,10 @@ def main():
     shutdown_event = threading.Event()
     i= 0
     try:
-        listen_thread = threading.Thread(target=msg.listen_for_clients, args=(server_socket, shared_message, shutdown_event,handle_client))
+        listen_thread = threading.Thread(target=msg.listen_for_clients, args=(server_socket, shared_message, shutdown_event, handle_client, giocatori))
         listen_thread.start()
 
-        send_thread = threading.Thread(target=msg.send_messages, args=(shared_message, shutdown_event))
+        send_thread = threading.Thread(target=msg.send_messages, args=(shared_message, shutdown_event, giocatori))
         send_thread.start()
 
         listen_thread.join()
