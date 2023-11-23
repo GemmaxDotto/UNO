@@ -9,11 +9,13 @@ import javax.swing.text.DefaultCaret;
 public class ClientGUI extends JFrame {
 
     private GameManaging Game = new GameManaging();
-    private UnoDeck unoDeck = new UnoDeck();
-    private CardPanel cardPanel;
-    private ArrayList<CardComponent> opponentCards = new ArrayList<>();
-    private ArrayList<CardComponent> playerCards = new ArrayList<>();
+    private ArrayList<CardComponent> opponentCards;
+    private ArrayList<CardComponent> playerCards;
     JPanel mainPanel;
+    JPanel centerCardPanel;
+    JPanel cardsPanel;
+    JPanel playerCardsPanel;
+    JPanel opponentCardsPanel;
 
     public ClientGUI() throws IOException {
         super("Uno Game Client");
@@ -26,12 +28,11 @@ public class ClientGUI extends JFrame {
         }
 
         // Creazione del pannello principale con BorderLayout
-         mainPanel = new JPanel(new BorderLayout());
+        mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(Color.WHITE);
 
         setCards();
 
-       
         // Creazione del pannello per la chat
         JPanel chatPanel = new JPanel(new BorderLayout());
 
@@ -66,6 +67,13 @@ public class ClientGUI extends JFrame {
         chatButtonPanel.add(sendButton);
 
         JButton unoButton = new JButton("UNO");
+        unoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Logica per gestire l'evento UNO
+                // Invia un messaggio al server o esegui altre azioni necessarie
+            }
+        });
         chatButtonPanel.add(unoButton);
 
         // Aggiungi il pannello dei bottoni della chat nella parte inferiore del
@@ -84,53 +92,77 @@ public class ClientGUI extends JFrame {
         setVisible(true);
     }
 
-    public void setCards(){
-         // Creazione del CardPanel e assegnamento alla variabile di istanza cardPanel
-        cardPanel = new CardPanel(Game,this);
+    public void setCards() {
+        
+        
+
+        playerCards=new ArrayList<>();
+        opponentCards=new ArrayList<>();
+        // Creazione del CardPanel e assegnamento alla variabile di istanza cardPanel
+        
         mainPanel.setBackground(new Color(255, 255, 153)); // Imposta lo sfondo giallo
-
-        // Aggiungi le carte del giocatore principale al tuo mazzo
-        for (UnoCard unoCard : Game.myCards) {
-            unoDeck.addCards(unoCard);
-            playerCards.add(new CardComponent(unoCard, Game,this)); // Aggiungi le carte del giocatore principale
-        }
-
-        // Aggiungi le carte del giocatore principale nella parte superiore del pannello
-        // delle carte
-        cardPanel.addCardsToTop(playerCards);
-
-        // Aggiorna il pannello delle carte
-        cardPanel.updateCards();
-
-        // Aggiungi il CardPanel nella parte superiore del pannello principale
-        mainPanel.add(cardPanel, BorderLayout.NORTH);
-
-        // Creazione del pannello per le carte dell'avversario
-        JPanel opponentCardsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        // Aggiungi le carte dell'avversario al pannello delle carte dell'avversario
-        for (int i = 0; i < 7; i++)
-            opponentCards.add(new CardComponent(new UnoCard("B", "K", true), Game,this));
-
-        cardPanel.addCardsToTop(opponentCards);
-
-        // Aggiungi il pannello delle carte dell'avversario nella parte inferiore del
-        // pannello principale
-        mainPanel.add(opponentCardsPanel, BorderLayout.SOUTH);
-
+    
         // Creazione del pannello per la carta al centro
-        JPanel centerCardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        UnoCard centerCard = new UnoCard("5", "R", false); // Sostituisci con la tua logica per la carta al centro
-        CardComponent centerCardComponent = new CardComponent(centerCard, Game,this);
+        centerCardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        UnoCard centerCard = GameManaging.tempCard; // carta al centro
+        CardComponent centerCardComponent = new CardComponent(centerCard, Game, this);
         centerCardPanel.add(centerCardComponent);
-
-        // Aggiungi il pannello della carta al centro nella parte centrale del pannello
-        // principale
-        mainPanel.add(centerCardPanel, BorderLayout.CENTER);
-
+    
+        // Creazione del pannello per le carte dell'avversario
+        opponentCardsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    
+        // Aggiungi le carte dell'avversario al pannello delle carte dell'avversario
+        for (int i = 0; i < 7; i++) {
+            CardComponent opponentCard = new CardComponent(new UnoCard("B", "K", true), Game, this);
+            opponentCard.setPreferredSize(new Dimension(50, 80)); // Imposta le dimensioni desiderate per le carte
+            opponentCards.add(opponentCard);
+            opponentCardsPanel.add(opponentCard);
+        }
+    
+        // Creazione del pannello per le carte del giocatore
+        playerCardsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    
+        // Aggiungi le carte del giocatore principale nel pannello delle carte del giocatore
+        for (UnoCard unoCard : Game.myCards) {
+            CardComponent playerCard = new CardComponent(unoCard, Game, this);
+            playerCard.setPreferredSize(new Dimension(50, 80)); // Imposta le dimensioni desiderate per le carte
+            playerCards.add(playerCard); // Aggiungi le carte del giocatore principale
+            playerCardsPanel.add(playerCard);
+            
+        }
+    
+        // Creazione del pannello per le carte del centro (playerCards - carta centrale - opponentCards)
+        JPanel cardsPanel = new JPanel(new BorderLayout());
+        cardsPanel.add(opponentCardsPanel, BorderLayout.NORTH);
+        cardsPanel.add(centerCardPanel, BorderLayout.CENTER);
+        cardsPanel.add(playerCardsPanel, BorderLayout.SOUTH);
+        
+    
+        // Aggiungi i pannelli al mainPanel
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.add(cardsPanel, BorderLayout.CENTER);
     }
 
-    public void CardUpdateGUI() {
-        cardPanel.updateCards();
+    public void updatePlayerCards() {
+        playerCardsPanel.removeAll();  // Rimuovi tutti i componenti attuali
+        for (UnoCard card : Game.myCards) {
+            CardComponent playerCard = new CardComponent(card, Game, this);
+            playerCardsPanel.add(playerCard);
+        }
+        playerCardsPanel.revalidate();
+        playerCardsPanel.repaint();
     }
+
+    public void updateCentralCard() {
+
+        centerCardPanel.removeAll();  // Rimuovi tutti i componenti attuali
+         UnoCard centerCard = GameManaging.tempCard; // carta al centro
+        CardComponent centerCardComponent = new CardComponent(centerCard, Game, this);
+        centerCardPanel.add(centerCardComponent);
+        centerCardPanel.revalidate();
+        centerCardPanel.repaint();
+    }
+    
+
 
 }
