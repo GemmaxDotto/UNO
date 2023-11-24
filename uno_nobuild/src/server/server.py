@@ -102,9 +102,10 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                 
                 nickClient = received_message.strip().split(";")[0]
                 if correct:
-                    lasciaCarta(card_lasciata)
 
                     giocatoreClient,pos = searchClient(nickClient) 
+                    lasciaCarta(card_lasciata,pos)
+
 
                     if(giocatoreClient.getNumeroCarte()==1 & received_message.strip().split(";")[3]!="1"):
                         for i in range(0,3):
@@ -240,7 +241,7 @@ def checkIsValid(card_lasciata):
 
 def lasciaCarta(carta,posGiocatore):
     mazzo_tavolo.append(carta)
-    giocatori[posGiocatore].rimuoviCarta(carta)
+    giocatori[posGiocatore].rimuovi_carta(carta)
 
 def checkCartaSpeciale(card):
     if len(card)>2:
