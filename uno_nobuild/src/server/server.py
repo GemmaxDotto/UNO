@@ -1,5 +1,6 @@
 import socket
 import random
+import time
 import giocatore as player
 import MyTimerThread as myt
 import threading
@@ -66,15 +67,18 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                     conferma_message= received_message.strip().split(";")[1]+";" +cards + "\r\n"
                     print(conferma_message)
                     giocatori[numero].imposta_mazzo(cards)
-                    #socketTemp=giocatori[numero].get_c_socket()
-                     #client_socket.sendall(conferma_message.encode())
                     msg.send_messages(received_message.strip().split(";")[1],conferma_message,giocatori)
+                # 30 secondi di attesa dei Client 10 per Debug se mi scordo rimarranno 10
+                time.sleep(10)
+                for numero in range(clients):
+                    msg.send_messages(giocatori[numero].get_nick(),"GO"+"\r\n",giocatori)
+                    
                     
                     
             elif game==True and received_message.strip().split(";")[1]=="first":
                 card=random.choice(mazzo_temp)
                 mazzo_tavolo.append(card)
-                conferma_message = card + "\r\n"   
+                conferma_message = card +";"+str(clients-1)+ "\r\n"   #invio carta centrale+ numero di avversari
                 
                 for numero in range(clients):
                     msg.send_messages(giocatori[numero].get_nick(),conferma_message,giocatori)
@@ -112,7 +116,7 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                             giocatoreClient.aggiungi_carta(pesca_carta())
 
                     #invia solo ok non mazzo
-                    conferma_message = "ok"   
+                    conferma_message = "ok"+"\r\n"
 
                     msg.send_messages(nickClient,conferma_message,giocatori)
                     spostaTurno(1,cambio_verso= False)
@@ -129,7 +133,7 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                             giocatoreSuccessivo = getGiocatoreSuccessivo()
                             for i in range(len(carte)):
                                 giocatoreSuccessivo.aggiungi_carta(carte[i])
-                            conferma_message = nickClient + ";" + "mazzo" + ";" +giocatoreClient.getMazzoToString()   
+                            conferma_message = nickClient + ";" + "mazzo" + ";" +giocatoreClient.getMazzoToString()+"\r\n"
                             msg.send_messages(nickClient,conferma_message,giocatori)
                             spostaTurno(1,cambio_verso= False)
 
