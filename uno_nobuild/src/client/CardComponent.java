@@ -13,12 +13,16 @@ public class CardComponent extends JButton {
     private UnoCard card;
     GameManaging Game;
     ClientGUI GUI;
-    JPanel parentPanel;
+    
 
-    public CardComponent(UnoCard card, GameManaging Game, ClientGUI GUI) {
+
+   
+    public CardComponent(UnoCard card,GameManaging Game) {
+
         this.card = card;
         this.Game = Game;
         this.GUI = GUI;
+
 
         ImageIcon originalIcon = new ImageIcon(card.getImagePath());
         Image originalImage = originalIcon.getImage();
@@ -41,9 +45,11 @@ public class CardComponent extends JButton {
         public void mouseClicked(java.awt.event.MouseEvent e) {
             UnoCard clickedCard = getCard();
 
+
             Game.handleLascia(clickedCard);
 
             System.out.println("carta cliccata" + clickedCard);
+
         }
     }
 

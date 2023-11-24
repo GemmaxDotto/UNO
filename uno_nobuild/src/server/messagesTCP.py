@@ -9,15 +9,15 @@ def send_messages(giocatore_nick, messaggio, giocatori):
         with giocatori_lock:
             giocatore_destinatario = None
             for giocatore in giocatori:
-             if giocatore.get_nick().strip() == giocatore_nick.strip():
-              giocatore_destinatario = giocatore
-              break
+                if giocatore.get_nick().strip() == giocatore_nick.strip():
+                    giocatore_destinatario = giocatore
+                    break
 
         if giocatore_destinatario:
         # Fai qualcosa con il giocatore trovato
-         giocatore_destinatario.get_c_socket().sendall(messaggio.encode('utf-8'))
+            giocatore_destinatario.get_c_socket().sendall(messaggio.encode('utf-8'))
         else:
-         print(f"Giocatore con nickname {giocatore_nick} non trovato.")
+            print(f"Giocatore con nickname {giocatore_nick} non trovato.")
 
 
     except Exception as e:

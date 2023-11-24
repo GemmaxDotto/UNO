@@ -63,10 +63,16 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                      
             elif game==True and received_message.strip().split(";")[0]=="game":
                 for numero in range(clients):
-                    cards=create_seven()
+                    cardArray=[]
+                    cards,cardArray=create_seven()
                     conferma_message= received_message.strip().split(";")[1]+";" +cards + "\r\n"
                     print(conferma_message)
-                    giocatori[numero].imposta_mazzo(cards)
+
+
+                    giocatori[numero].imposta_mazzo(cardArray)
+                    #socketTemp=giocatori[numero].get_c_socket()
+                     #client_socket.sendall(conferma_message.encode())
+
                     msg.send_messages(received_message.strip().split(";")[1],conferma_message,giocatori)
                 # 30 secondi di attesa dei Client 10 per Debug se mi scordo rimarranno 10
                 time.sleep(10)
@@ -102,29 +108,49 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                 #controllo se turno corretto
 
                 card_lasciata = received_message.strip().split(";")[2]
+
                 correct,speciale = checkIsValid(card_lasciata)
+
                 
                 nickClient = received_message.strip().split(";")[0]
+
                 if correct:
 
+
                     giocatoreClient,pos = searchClient(nickClient) 
+                    print("1")
+                    print(pos)
+                    print(giocatoreClient.getMazzoToString())
                     lasciaCarta(card_lasciata,pos)
+                    print("2")
+                    
+                    print(received_message.strip())
+                    
 
-
-                    if(giocatoreClient.getNumeroCarte()==1 & received_message.strip().split(";")[3]!="1"):
+                    if(giocatoreClient.get_numero_carte()==1 and received_message.strip().split(";")[3]!="1"):
+                        print("3")
                         for i in range(0,3):
                             giocatoreClient.aggiungi_carta(pesca_carta())
 
                     #invia solo ok non mazzo
+
+                    print("4")
+
                     conferma_message = "ok"+"\r\n"
 
+
                     msg.send_messages(nickClient,conferma_message,giocatori)
+                    print("5")
+
                     spostaTurno(1,cambio_verso= False)
+                    print("6")
+
 
 
 
                 if speciale and correct:
                         msgSpeciale,carte = gestisciSpeciale(card_lasciata)    
+                        print(msgSpeciale)
                         if len(msgSpeciale)>0:     
                             for numero in range(clients):
                                 conferma_message=msgSpeciale
@@ -254,13 +280,15 @@ def checkCartaSpeciale(card):
 
 def create_seven(): 
     cards=""   
+    cardArray=[]
     
     for numero in range(7):
       card=random.choice(mazzo_temp)
+      cardArray.append(card)
       cards+=card+"-"
       mazzo_temp.remove(card)
       
-    return cards
+    return cards,cardArray
 
 def pesca_carta():
     card = mazzo_temp[-1]

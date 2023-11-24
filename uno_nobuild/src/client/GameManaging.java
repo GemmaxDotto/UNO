@@ -14,12 +14,15 @@ public class GameManaging {
     String nickNameString;
     ClientGUI GUI;
 
+
     public ArrayList<UnoCard> getMyCards() {
         return myCards;
     }
 
     public GameManaging(ClientGUI GUI) {
         this.GUI = GUI;
+
+
         client = new TCPClient("localhost", 666);
         Join();
     }
@@ -127,9 +130,11 @@ public class GameManaging {
         }
     }
 
+
     public void setCenterCard(UnoCard card) {
 
         tempCard = card;
+
 
     }
 
