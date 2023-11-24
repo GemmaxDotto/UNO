@@ -1,13 +1,12 @@
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
-import java.awt.image.ImageObserver;
+
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 public class GUIClientSTART extends JFrame {
 
@@ -20,10 +19,8 @@ public class GUIClientSTART extends JFrame {
 
     private void setupUI() {
 
-        // Carica l'immagine di sfondo (assicurati che il percorso sia corretto)
-        ImageIcon backgroundImageIcon = new ImageIcon("uno_nobuild\\src\\docs\\images\\unocards3.jpg");
+        ImageIcon backgroundImageIcon = new ImageIcon("uno_nobuild\\src\\client\\images\\unocards3.jpg");
 
-        // Crea un pannello con l'immagine di sfondo
         BackgroundPanel backgroundPanel = new BackgroundPanel(backgroundImageIcon);
         backgroundPanel.setLayout(new GridBagLayout());
         OvalButton startButton = new OvalButton("JOIN A PARTY");
@@ -54,7 +51,7 @@ public class GUIClientSTART extends JFrame {
         backgroundPanel.add(creditsButton, gbc);
 
         startButton.addActionListener(e -> {
-            // Ciò che vuoi che accada quando il pulsante viene premuto
+
             dispose();
 
             try {
@@ -67,24 +64,21 @@ public class GUIClientSTART extends JFrame {
         });
 
         rulesButton.addActionListener(e -> {
-            // Ciò che vuoi che accada quando il pulsante viene premuto
+
             System.out.println("Il pulsante RULES è stato premuto!");
-            // Puoi aggiungere qui il codice per avviare un'altra finestra o eseguire altre
-            // azioni.
+
         });
 
         creditsButton.addActionListener(e -> {
-            // Ciò che vuoi che accada quando il pulsante viene premuto
+
             System.out.println("Il pulsante CREDITS è stato premuto!");
-            // Puoi aggiungere qui il codice per avviare un'altra finestra o eseguire altre
-            // azioni.
+
         });
 
-        // Imposta la grandezza della finestra
         setSize(1200, 700);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Centra la finestra
+        setLocationRelativeTo(null);
         add(backgroundPanel);
     }
 
