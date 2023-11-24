@@ -98,12 +98,8 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
 
                 card_lasciata = received_message.strip().split(";")[2]
                 correct,speciale = checkIsValid(card_lasciata)
-<<<<<<< HEAD
                 
                 nickClient = received_message.strip().split(";")[0]
-=======
-
->>>>>>> 05e3dc6905a46a59c9cd49155b7066af7a4bcb88
                 if correct:
                     lasciaCarta(card_lasciata)
 
@@ -113,18 +109,10 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                         for i in range(0,3):
                             giocatoreClient.aggiungi_carta(pesca_carta())
 
-<<<<<<< HEAD
                     #invia solo ok non mazzo
                     conferma_message = nickClient + ";" + "mazzo" + ";" +giocatoreClient.getMazzoToString()   
 
                     msg.send_messages(nickClient,conferma_message,giocatori)
-=======
-                    
-                    conferma_message = nickClient + ";" + "mazzo" + ";" +giocatoreClient.getMazzoToString()   
-
-                    
-                    giocatoreClient.get_c_socket.sendall(conferma_message.encode())
->>>>>>> 05e3dc6905a46a59c9cd49155b7066af7a4bcb88
                     spostaTurno(1,cambio_verso= False)
 
 
@@ -134,21 +122,13 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                         if len(msgSpeciale)>0:     
                             for numero in range(clients):
                                 conferma_message=msgSpeciale
-<<<<<<< HEAD
                                 msg.send_messages(giocatori[numero].get_nick(),conferma_message,giocatori)
-=======
-                                giocatori[numero].get_c_socket.sendall(conferma_message.encode())
->>>>>>> 05e3dc6905a46a59c9cd49155b7066af7a4bcb88
                         if len(carte)>0:
                             giocatoreSuccessivo = getGiocatoreSuccessivo()
                             for i in range(len(carte)):
                                 giocatoreSuccessivo.aggiungi_carta(carte[i])
                             conferma_message = nickClient + ";" + "mazzo" + ";" +giocatoreClient.getMazzoToString()   
-<<<<<<< HEAD
                             msg.send_messages(nickClient,conferma_message,giocatori)
-=======
-                            giocatoreClient.get_c_socket.sendall(conferma_message.encode())
->>>>>>> 05e3dc6905a46a59c9cd49155b7066af7a4bcb88
                             spostaTurno(1,cambio_verso= False)
 
                             
@@ -219,11 +199,7 @@ def gestisciSpeciale(card):
 
     elif card=="Draw Four":
         nickGiocatoreSuccessivo=getGiocatoreSuccessivo().get_nick()
-<<<<<<< HEAD
         msg = "speciale;"+nickGiocatoreSuccessivo+";pesca_quattro"
-=======
-        msg = "speciale;"+nickGiocatoreSuccessivo+";pesca_due"
->>>>>>> 05e3dc6905a46a59c9cd49155b7066af7a4bcb88
         pesca=4
     
     elif card=="Change Color":
