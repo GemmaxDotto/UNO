@@ -89,6 +89,7 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
 
                 giocatoreClient.aggiungi_carta(card_pescata)               
                 #manda solo carta pescata 
+                conferma_message=nickClient+";"+card_pescata
                 conferma_message = nickClient + ";" + "mazzo" + ";" +giocatoreClient.getMazzoToString()+ "\r\n"
                 msg.send_messages(nickClient,conferma_message,giocatori)
                 spostaTurno(1,cambio_verso= False)
@@ -110,7 +111,7 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                             giocatoreClient.aggiungi_carta(pesca_carta())
 
                     #invia solo ok non mazzo
-                    conferma_message = nickClient + ";" + "mazzo" + ";" +giocatoreClient.getMazzoToString()   
+                    conferma_message = "ok"   
 
                     msg.send_messages(nickClient,conferma_message,giocatori)
                     spostaTurno(1,cambio_verso= False)
