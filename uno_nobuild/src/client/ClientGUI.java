@@ -8,7 +8,7 @@ import javax.swing.text.DefaultCaret;
 
 public class ClientGUI extends JFrame {
 
-    private GameManaging Game = new GameManaging();
+    //private GameManaging Game = new GameManaging();
     private ArrayList<CardComponent> opponentCards;
     private ArrayList<CardComponent> playerCards;
     JPanel mainPanel;
@@ -16,9 +16,14 @@ public class ClientGUI extends JFrame {
     JPanel cardsPanel;
     JPanel playerCardsPanel;
     JPanel opponentCardsPanel;
+    Condivisa cond = new Condivisa();
+
 
     public ClientGUI() throws IOException {
         super("Uno Game Client");
+        cond.createGameManaging(cond);
+
+
 
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -104,8 +109,8 @@ public class ClientGUI extends JFrame {
     
         // Creazione del pannello per la carta al centro
         centerCardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        UnoCard centerCard = GameManaging.tempCard; // carta al centro
-        CardComponent centerCardComponent = new CardComponent(centerCard, Game, this);
+        UnoCard centerCard = cond.tempCard; // carta al centro
+        CardComponent centerCardComponent = new CardComponent(centerCard, cond, this);
         centerCardPanel.add(centerCardComponent);
     
         // Creazione del pannello per le carte dell'avversario
@@ -113,7 +118,7 @@ public class ClientGUI extends JFrame {
     
         // Aggiungi le carte dell'avversario al pannello delle carte dell'avversario
         for (int i = 0; i < 7; i++) {
-            CardComponent opponentCard = new CardComponent(new UnoCard("B", "K", true), Game, this);
+            CardComponent opponentCard = new CardComponent(new UnoCard("B", "K", true), cond, this);
             opponentCard.setPreferredSize(new Dimension(50, 80)); // Imposta le dimensioni desiderate per le carte
             opponentCards.add(opponentCard);
             opponentCardsPanel.add(opponentCard);
@@ -123,8 +128,8 @@ public class ClientGUI extends JFrame {
         playerCardsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     
         // Aggiungi le carte del giocatore principale nel pannello delle carte del giocatore
-        for (UnoCard unoCard : Game.myCards) {
-            CardComponent playerCard = new CardComponent(unoCard, Game, this);
+        for (UnoCard unoCard : cond.Game.myCards) {
+            CardComponent playerCard = new CardComponent(unoCard, cond, this);
             playerCard.setPreferredSize(new Dimension(50, 80)); // Imposta le dimensioni desiderate per le carte
             playerCards.add(playerCard); // Aggiungi le carte del giocatore principale
             playerCardsPanel.add(playerCard);
@@ -145,8 +150,8 @@ public class ClientGUI extends JFrame {
 
     public void updatePlayerCards() {
         playerCardsPanel.removeAll();  // Rimuovi tutti i componenti attuali
-        for (UnoCard card : Game.myCards) {
-            CardComponent playerCard = new CardComponent(card, Game, this);
+        for (UnoCard card : cond.Game.myCards) {
+            CardComponent playerCard = new CardComponent(card, cond, this);
             playerCardsPanel.add(playerCard);
         }
         playerCardsPanel.revalidate();
@@ -156,8 +161,8 @@ public class ClientGUI extends JFrame {
     public void updateCentralCard() {
 
         centerCardPanel.removeAll();  // Rimuovi tutti i componenti attuali
-         UnoCard centerCard = GameManaging.tempCard; // carta al centro
-        CardComponent centerCardComponent = new CardComponent(centerCard, Game, this);
+         UnoCard centerCard = cond.tempCard; // carta al centro
+        CardComponent centerCardComponent = new CardComponent(centerCard, cond, this);
         centerCardPanel.add(centerCardComponent);
         centerCardPanel.revalidate();
         centerCardPanel.repaint();

@@ -11,18 +11,21 @@ import javax.swing.JPanel;
 
 public class CardComponent extends JButton {
     private UnoCard card;
-    GameManaging Game;
+    //GameManaging Game;
     ClientGUI GUI;
     JPanel parentPanel;
+    Condivisa cond;
     
 
-    public CardComponent(UnoCard card, GameManaging Game, ClientGUI GUI) {
+    //public CardComponent(UnoCard card, GameManaging Game, ClientGUI GUI) {
+    public CardComponent(UnoCard card, Condivisa cond, ClientGUI GUI) {
+
         this.card = card;
         // setText(card.toString()); // Usa toString() o un'altra rappresentazione
         // testuale della carta
         // setOpaque(true);
         // setBackground(Color.WHITE);
-        this.Game=Game;
+        this.cond=cond;
         this.GUI=GUI;
        
         ImageIcon originalIcon = new ImageIcon(card.getImagePath());
@@ -59,19 +62,23 @@ public class CardComponent extends JButton {
             // sendMessageToServer()
             // che possa inviare il messaggio al server
             //&&clickedCard.toString().(Game.myCards)
-            if (Game != null&&!clickedCard.getColore().equals("K")&&!clickedCard.toString().equals(GameManaging.tempCard.toString())) {
-                Game.client.sendMessage(Game.nickNameString+";"+"lascia;"+clickedCard.toString());
-                String receString=Game.client.receiveMessage().strip().split(";")[3];
+            if (cond.Game != null&&!clickedCard.getColore().equals("K")&&!clickedCard.toString().equals(cond.tempCard.toString())) {
+                System.out.println("cliccato");
+                cond.Game.client.sendMessage(cond.Game.nickNameString+";"+"lascia;"+clickedCard.toString()+";0");
+                //String receString=cond.Game.client.receiveMessage().strip().split(";")[3];
+                String receString=cond.Game.client.receiveMessage().strip();
+
+                System.out.println(receString);
                 if(receString.equals("ok")){
                     //gestire ricezione mess speciali
-                Game.setCenterCard(clickedCard);
-                Game.carteButtate.add(clickedCard);
-                Game.myCards.remove(clickedCard);
-                GameManaging.tempCard=clickedCard;
+                    cond.Game.setCenterCard(clickedCard);
+                    cond.Game.carteButtate.add(clickedCard);
+                    cond.Game.myCards.remove(clickedCard);
+                    cond.tempCard=clickedCard;
     
 
-                GUI.updatePlayerCards();
-                GUI.updateCentralCard();
+                    GUI.updatePlayerCards();
+                    GUI.updateCentralCard();
                 }
                 
                 

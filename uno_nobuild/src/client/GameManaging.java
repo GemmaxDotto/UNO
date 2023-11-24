@@ -12,15 +12,18 @@ public class GameManaging {
     TCPClient client;
     ArrayList<UnoCard> myCards=new ArrayList<UnoCard>();
     ArrayList<UnoCard> carteButtate=new ArrayList<UnoCard>();
-    static UnoCard tempCard;
+    //static UnoCard tempCard;
     boolean on=true;
     String nickNameString;
+    Condivisa cond;
+
 
     public ArrayList<UnoCard> getMyCards() {
         return myCards;
     }
 
-    public GameManaging()  {
+    public GameManaging(Condivisa cond)  {
+        this.cond=cond;
         client = new TCPClient("localhost", 666);
         Join();
     }
@@ -84,11 +87,21 @@ public class GameManaging {
         
         client.sendMessage("CentralCard;first");
         String mess = client.receiveMessage();
-         tempCard = fromString(mess);
+        cond.tempCard = fromString(mess);
 
+        /*
         //thread per ricezioni msg
-        
+        threadMsg t = new threadMsg(cond);
+        t.start();
 
+
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        */
 
         
 
@@ -167,7 +180,7 @@ public class GameManaging {
 
     public void setCenterCard(UnoCard card) {  
         
-        tempCard=card;
+        cond.tempCard=card;
        // return carteButtate.get(carteButtate.size());
         
     }
