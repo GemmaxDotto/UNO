@@ -63,7 +63,8 @@ public class CardComponent extends JButton {
                 Game.client.sendMessage(Game.nickNameString+";"+"lascia;"+clickedCard.toString());
                 String receString=Game.client.receiveMessage().strip().split(";")[3];
                 if(receString.equals("ok")){
-                    Game.setCenterCard(clickedCard);
+                    //gestire ricezione mess speciali
+                Game.setCenterCard(clickedCard);
                 Game.carteButtate.add(clickedCard);
                 Game.myCards.remove(clickedCard);
                 GameManaging.tempCard=clickedCard;

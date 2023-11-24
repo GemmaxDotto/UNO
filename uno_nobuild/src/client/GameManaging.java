@@ -86,6 +86,9 @@ public class GameManaging {
         String mess = client.receiveMessage();
          tempCard = fromString(mess);
 
+        //thread per ricezioni msg
+        
+
 
         
 
