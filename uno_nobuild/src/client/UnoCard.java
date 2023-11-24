@@ -1,10 +1,9 @@
 import java.awt.Image;
-import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-public class UnoCard extends JButton{
+public class UnoCard extends JButton {
     private String numero;
     private String colore;
     private boolean isSpeciale;
@@ -27,8 +26,8 @@ public class UnoCard extends JButton{
         this.isSpeciale = isSpeciale;
     }
 
-    public String getImagePath(){
-        
+    public String getImagePath() {
+
         String imagePath;
         if (isSpeciale) {
             imagePath = "uno_nobuild/src/client/carte/" + getNumero() + getColore() + "_1.png";
@@ -49,7 +48,6 @@ public class UnoCard extends JButton{
     public String toString() {
         return numero + colore;
     }
-
 
     public String getNumero() {
         return numero;
