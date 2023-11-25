@@ -27,6 +27,10 @@ public class threadMsg extends Thread {
                     if (receivedMessage != null && receivedMessage.equals("GO")) {
                         Game.on = true;
                     }
+                    if(receivedMessage.strip().equals("ok")){
+                        Game.tempString = "ok";
+                        System.out.println("ok ricevuto");
+                    }
 
                     Thread.sleep(500); 
                 }

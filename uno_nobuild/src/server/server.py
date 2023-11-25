@@ -74,8 +74,8 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                      #client_socket.sendall(conferma_message.encode())
 
                     msg.send_messages(received_message.strip().split(";")[1],conferma_message,giocatori)
-                # 30 secondi di attesa dei Client 10 per Debug se mi scordo rimarranno 10
-                time.sleep(10)
+                # 30 secondi di attesa dei Client 2 per Debug se mi scordo rimarranno 2
+                time.sleep(2)
                 for numero in range(clients):
                     msg.send_messages(giocatori[numero].get_nick(),"GO"+"\r\n",giocatori)
                     
@@ -113,8 +113,21 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
 
                 
                 nickClient = received_message.strip().split(";")[0]
-
-                if correct:
+                if speciale and correct:
+                        msgSpeciale,carte = gestisciSpeciale(card_lasciata)    
+                        print(msgSpeciale)
+                        if len(msgSpeciale)>0:     
+                            for numero in range(clients):
+                                conferma_message=msgSpeciale
+                                msg.send_messages(giocatori[numero].get_nick(),conferma_message,giocatori)
+                        if len(carte)>0:
+                            giocatoreSuccessivo = getGiocatoreSuccessivo()
+                            for i in range(len(carte)):
+                                giocatoreSuccessivo.aggiungi_carta(carte[i])
+                            conferma_message = nickClient + ";" + "mazzo" + ";" +giocatoreClient.getMazzoToString()+"\r\n"
+                            msg.send_messages(nickClient,conferma_message,giocatori)
+                            spostaTurno(1,cambio_verso= False)
+                elif correct:
 
 
                     giocatoreClient,pos = searchClient(nickClient) 
@@ -138,32 +151,12 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
 
                     conferma_message = "ok"+"\r\n"
 
-
                     msg.send_messages(nickClient,conferma_message,giocatori)
                     print("5")
 
                     spostaTurno(1,cambio_verso= False)
                     print("6")
-
-
-
-
-                if speciale and correct:
-                        msgSpeciale,carte = gestisciSpeciale(card_lasciata)    
-                        print(msgSpeciale)
-                        if len(msgSpeciale)>0:     
-                            for numero in range(clients):
-                                conferma_message=msgSpeciale
-                                msg.send_messages(giocatori[numero].get_nick(),conferma_message,giocatori)
-                        if len(carte)>0:
-                            giocatoreSuccessivo = getGiocatoreSuccessivo()
-                            for i in range(len(carte)):
-                                giocatoreSuccessivo.aggiungi_carta(carte[i])
-                            conferma_message = nickClient + ";" + "mazzo" + ";" +giocatoreClient.getMazzoToString()+"\r\n"
-                            msg.send_messages(nickClient,conferma_message,giocatori)
-                            spostaTurno(1,cambio_verso= False)
-
-                            
+                
                 else:
                     #carta non valida
                     message = nickClient+";errore;carta_non_valida"
@@ -274,7 +267,9 @@ def lasciaCarta(carta,posGiocatore):
     giocatori[posGiocatore].rimuovi_carta(carta)
 
 def checkCartaSpeciale(card):
-    if len(card)>2:
+    if(card=="Draw Four" or card=="Change Color"):
+        return True
+    if len(card.split("_")[0])>2:
         return True
     return False
 
