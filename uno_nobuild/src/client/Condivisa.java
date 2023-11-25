@@ -1,13 +1,15 @@
 public class Condivisa {
-    public static GameManaging Game;
-    public static UnoCard tempCard;
+    public GameManaging Game;
+    public UnoCard tempCard;
 
     
-    public Condivisa(){
+    public Condivisa(ClientGUI GUI){
+        this.Game= new GameManaging(GUI,this);
+        System.out.println("Game");
     }
 
-    public void createGameManaging(Condivisa cond){
-        this.Game= new GameManaging(cond);
+    public void startGameManaging(){
+        this.Game.startGame();
     }
 
 }
