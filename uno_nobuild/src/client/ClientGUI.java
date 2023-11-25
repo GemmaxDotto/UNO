@@ -9,7 +9,6 @@ import javax.swing.text.DefaultCaret;
 public class ClientGUI extends JFrame {
 
 
-    private GameManaging Game;
 
     private ArrayList<CardComponent> playerCards;
     JPanel mainPanel;
@@ -17,12 +16,12 @@ public class ClientGUI extends JFrame {
     JPanel cardsPanel;
     JPanel playerCardsPanel;
     JPanel opponentCardsPanel;
-    Condivisa cond = new Condivisa();
-
-
+    Condivisa cond;
     public ClientGUI() throws IOException {
         super("Uno Game Client");
-        cond.createGameManaging(cond);
+        this.cond=new Condivisa(this);
+        this.cond.startGameManaging();
+        
 
 
 
@@ -32,7 +31,6 @@ public class ClientGUI extends JFrame {
                 | IllegalAccessException e) {
             e.printStackTrace();
         }
-        Game = new GameManaging(this);
 
         // Creazione del pannello principale con BorderLayout
         mainPanel = new JPanel(new BorderLayout());
@@ -107,12 +105,12 @@ public class ClientGUI extends JFrame {
         // Creazione del pannello per la carta al centro
         centerCardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-        UnoCard centerCard = Game.tempCard; // carta al centro
-        CardComponent centerCardComponent = new CardComponent(centerCard, Game);
+        UnoCard centerCard = cond.tempCard; // carta al centro
+        CardComponent centerCardComponent = new CardComponent(centerCard, cond);
         centerCardPanel.add(centerCardComponent);
         // Aggiungi la nuova carta accanto alla carta centrale
         UnoCard newCard = new UnoCard("B", "K", true);
-        CardComponent newCardComponent = new CardComponent(newCard, Game);
+        CardComponent newCardComponent = new CardComponent(newCard, cond);
         centerCardPanel.add(newCardComponent);
 
         JButton pescaButton = new JButton("Pesca");
@@ -121,7 +119,7 @@ public class ClientGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                 Game.handlePesca();
+                cond.Game.handlePesca();
             }
         });
 
@@ -132,8 +130,8 @@ public class ClientGUI extends JFrame {
 
         // Aggiungi le carte del giocatore principale nel pannello delle carte del
         // giocatore
-        for (UnoCard unoCard : Game.myCards) {
-            CardComponent playerCard = new CardComponent(unoCard, Game);
+        for (UnoCard unoCard : cond.Game.myCards) {
+            CardComponent playerCard = new CardComponent(unoCard, cond);
             playerCard.setPreferredSize(new Dimension(50, 80));
             playerCards.add(playerCard); // Aggiungi le carte del giocatore principale
             playerCardsPanel.add(playerCard);
@@ -162,13 +160,13 @@ public class ClientGUI extends JFrame {
         JPanel leftOpponentCardsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
         for (int i = 0; i < 7; i++) {
-            CardComponent opponentCard = new CardComponent(new UnoCard("B", "K", true), Game);
+            CardComponent opponentCard = new CardComponent(new UnoCard("B", "K", true), cond);
             opponentCard.setPreferredSize(new Dimension(50, 80));
-            if (Game.numeroAvv == 1)
+            if (cond.Game.numeroAvv == 1)
                 topOpponentCardsPanel.add(opponentCard);
-            if (Game.numeroAvv == 2)
+            if (cond.Game.numeroAvv == 2)
                 rightOpponentCardsPanel.add(opponentCard);
-            if (Game.numeroAvv == 3)
+            if (cond.Game.numeroAvv == 3)
                 leftOpponentCardsPanel.add(opponentCard);
         }
 
@@ -186,8 +184,8 @@ public class ClientGUI extends JFrame {
     public void updatePlayerCards() {
 
         playerCardsPanel.removeAll(); // Rimuozione tutti i componenti attuali
-        for (UnoCard card : Game.myCards) {
-            CardComponent playerCard = new CardComponent(card, Game);
+        for (UnoCard card : cond.Game.myCards) {
+            CardComponent playerCard = new CardComponent(card, cond);
             playerCardsPanel.add(playerCard);
         }
         playerCardsPanel.revalidate();
@@ -198,14 +196,14 @@ public class ClientGUI extends JFrame {
         centerCardPanel.removeAll(); // Rimuozione tutti i componenti attuali
 
 
-        UnoCard centerCard = Game.tempCard; // carta al centro
-        CardComponent centerCardComponent = new CardComponent(centerCard, Game);
+        UnoCard centerCard = cond.tempCard; // carta al centro
+        CardComponent centerCardComponent = new CardComponent(centerCard, cond);
 
         centerCardPanel.add(centerCardComponent);
 
         // Aggiunta carta Pesca accanto alla carta centrale
         UnoCard newCard = new UnoCard("B", "K", true);
-        CardComponent newCardComponent = new CardComponent(newCard, Game);
+        CardComponent newCardComponent = new CardComponent(newCard, cond);
         centerCardPanel.add(newCardComponent);
 
         JButton pescaButton = new JButton("Pesca");
@@ -214,7 +212,7 @@ public class ClientGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                Game.handlePesca();
+                cond.Game.handlePesca();
 
             }
         });

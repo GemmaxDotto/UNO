@@ -11,17 +11,16 @@ import javax.swing.JPanel;
 
 public class CardComponent extends JButton {
     private UnoCard card;
-    GameManaging Game;
+    Condivisa cond;
     ClientGUI GUI;
     
 
 
    
-    public CardComponent(UnoCard card,GameManaging Game) {
+    public CardComponent(UnoCard card,Condivisa cond) {
 
         this.card = card;
-        this.Game = Game;
-        this.GUI = GUI;
+        this.cond = cond;
 
 
         ImageIcon originalIcon = new ImageIcon(card.getImagePath());
@@ -46,7 +45,7 @@ public class CardComponent extends JButton {
             UnoCard clickedCard = getCard();
 
 
-            Game.handleLascia(clickedCard);
+            cond.Game.handleLascia(clickedCard);
 
             System.out.println("carta cliccata" + clickedCard);
 

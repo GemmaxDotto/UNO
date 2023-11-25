@@ -4,11 +4,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class WaitingWindow extends JDialog {
-    private GameManaging game;
+    Condivisa cond;
 
-    public WaitingWindow(GameManaging game) {
+    public WaitingWindow(Condivisa cond) {
         super((Frame) null, "Attendere...", true);
-        this.game = game;
+        this.cond = cond;
 
         setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         setSize(300, 150);
@@ -27,7 +27,7 @@ public class WaitingWindow extends JDialog {
             @Override
             public void windowOpened(WindowEvent e) {
                 new Thread(() -> {
-                    while (!game.isOn()) {
+                    while (!cond.Game.isOn()) {
                         try {
 
                             Thread.sleep(500);
