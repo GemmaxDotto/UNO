@@ -9,20 +9,24 @@ public class GameManaging {
     ArrayList<UnoCard> myCards = new ArrayList<UnoCard>();
     // ArrayList<UnoCard> carteButtate = new ArrayList<UnoCard>();
     int numeroAvv;
-    UnoCard tempCard;
     boolean on = true;
     String nickNameString;
     ClientGUI GUI;
+    Condivisa cond;
+    threadMsg threadMsg=null;
+    UnoCard clickedCard_tmp=null;
 
 
     public ArrayList<UnoCard> getMyCards() {
         return myCards;
     }
 
-    public GameManaging(ClientGUI GUI) {
+    public GameManaging(ClientGUI GUI,Condivisa cond) {
         this.GUI = GUI;
+        this.cond = cond;
 
-
+    }
+    public void startGame(){
         client = new TCPClient("localhost", 666);
         Join();
     }
@@ -67,15 +71,15 @@ public class GameManaging {
 
         }
 
-        threadMsg threadMsg = new threadMsg(client, this);
+        threadMsg = new threadMsg(client, cond);
         threadMsg.start();// thread per ricezioni msg
 
-        WaitingWindow wait = new WaitingWindow(this);
+        WaitingWindow wait = new WaitingWindow(cond);
         wait.setVisible(true);
 
         client.sendMessage("CentralCard;first");
         String mess = client.receiveMessage();
-        tempCard = fromString(mess.strip().split(";")[0]);
+        cond.tempCard = fromString(mess.strip().split(";")[0]);
         numeroAvv = Integer.parseInt(mess.strip().split(";")[1]);
 
     }
@@ -87,6 +91,10 @@ public class GameManaging {
         for (int i = 0; i < 7; i++)
             myCards.add(fromString(carte[i]));
 
+    }
+
+    public void setOn(Boolean b){
+        this.on=b;
     }
 
     // Metodo statico per creare una UnoCard da una stringa
@@ -133,7 +141,7 @@ public class GameManaging {
 
     public void setCenterCard(UnoCard card) {
 
-        tempCard = card;
+        cond.tempCard = card;
 
 
     }
@@ -155,19 +163,25 @@ public class GameManaging {
     }
 
     public void handleLascia(UnoCard clickedCard) {
-        if (!clickedCard.getColore().equals("K") && !clickedCard.toString().equals(tempCard.toString())) {
+        this.clickedCard_tmp = clickedCard;
+        if (!clickedCard.getColore().equals("K") && !clickedCard.toString().equals(cond.tempCard.toString())) {
             client.sendMessage(nickNameString + ";" + "lascia;" + clickedCard.toString());
-            String receString = client.receiveMessage().strip();
-            if (receString.equals("ok")) {
-                // gestire ricezione mess speciali
-                setCenterCard(clickedCard);
-                myCards.remove(clickedCard);
-                tempCard = clickedCard;
-
-                GUI.updatePlayerCards();
-                GUI.updateCentralCard();
-
-            }
+           
         }
+    }
+
+    public void gestisciRispostaLascia(){            
+        
+        //todo gestire ricezione mess speciali
+        
+        setCenterCard(this.clickedCard_tmp);
+        myCards.remove(this.clickedCard_tmp);
+        cond.tempCard = this.clickedCard_tmp;
+
+        GUI.updatePlayerCards();
+        GUI.updateCentralCard();    
+
+        this.clickedCard_tmp=null;
+        
     }
 }
