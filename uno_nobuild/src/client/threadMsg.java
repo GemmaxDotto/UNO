@@ -8,15 +8,16 @@
 public class threadMsg extends Thread {
 
     private TCPClient tcpClient;
-    private GameManaging Game;
+    private Condivisa cond;
 
-    public threadMsg(TCPClient tcpClient, GameManaging Game) {
+    public threadMsg(TCPClient tcpClient, Condivisa cond) {
         this.tcpClient = tcpClient;
-        this.Game = Game;
+        this.cond = cond;
     }
 
-    public void start() {
-
+    
+    @Override
+    public void run() {
         // Avvio di un thread separato per la gestione dei messaggi dal server
         new Thread(() -> {
             try {
@@ -25,7 +26,11 @@ public class threadMsg extends Thread {
                     String receivedMessage = tcpClient.receiveMessage();
 
                     if (receivedMessage != null && receivedMessage.equals("GO")) {
-                        Game.on = true;
+                        cond.Game.on = true;
+                    }
+                    if(receivedMessage.strip().equals("ok")){
+                        cond.Game.gestisciRispostaLascia();
+                        System.out.println("ok ricevuto");
                     }
 
                     Thread.sleep(500); 
