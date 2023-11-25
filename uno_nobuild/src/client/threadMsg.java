@@ -32,10 +32,7 @@ public class threadMsg extends Thread {
                         cond.Game.gestisciRispostaLascia();
                         System.out.println("ok ricevuto");
                     }
-                    if(receivedMessage.strip().equals("ok")){
-                        Game.tempString = "ok";
-                        System.out.println("ok ricevuto");
-                    }
+    
 
                     Thread.sleep(500); 
                 }
