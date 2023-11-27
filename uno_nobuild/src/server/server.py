@@ -7,13 +7,18 @@ import threading
 import messagesTCP as msg
 
 clients=0
+create=0
 mazzo_uno=[]
 mazzo_temp=[]
 game=False
+cardCenter=""
 giocatori=[]
 mazzo_tavolo=[]
 numeroTurno=1
 verso_turno=True
+accept_connections=True
+
+#barrier = threading.Barrier(2)
 
 def handle_client(client_socket, shared_message, shutdown_event, giocatori):
     try:
@@ -24,73 +29,71 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
 
             received_message = data.decode()
             
-            #parts = received_message.strip().split(';')
-            #print("Parti del messaggio:", parts)
+            # parts = received_message.strip().split(';')
+            # print("Parti del messaggio:", parts)
             
             if received_message.strip().split(";")[1] == "start":
                 global clients
                 clients += 1
-                nomeGiocatore=received_message.strip().split(";")[0]
-                #nomeGiocatore = "giocatore" + str(clients)
-                #nuovo_giocatore = player.giocatore(nomeGiocatore,0,client_socket,clients)
-                nuovo_giocatore = player.giocatore(nomeGiocatore,0,client_socket)
-
+                nomeGiocatore = received_message.strip().split(";")[0]
+                nuovo_giocatore = player.giocatore(nomeGiocatore, 0, client_socket) #creo nuovo giocatore
                 
-                giocatori.append(nuovo_giocatore)
-                conferma_message = "ok;start;"+str(clients)+"\r\n"
+                giocatori.append(nuovo_giocatore) #aggiungo giocatore alla lista
+                conferma_message = "ok;start;" + str(clients) + "\r\n" #invio conferma
 
-                #timer_thread = myt.MyTimerThread(30000, StartGame)
-                #timer_thread.start();
-
-                print(f"Giocatori: {giocatori[0].get_nick()}")
-                print(f"Invio: {conferma_message}")
-                msg.send_messages(nomeGiocatore,conferma_message,giocatori)
-                #client_socket.sendall(conferma_message.encode())
+                print(f"Giocatori: {giocatori[0].get_nick()}") #stampa giocatori
+                print(f"Invio: {conferma_message}") #stampa messaggio inviato
+                msg.send_messages(nomeGiocatore, conferma_message, giocatori) #invio messaggio
                 global game
-                game=True 
+                game = True #imposto game a true
 
-                if clients==1 :
-                    global mazzo_uno
-                    mazzo_uno = crea_mazzo_uno()
-                    global mazzo_temp
-                    mazzo_temp=mazzo_uno
+                global create 
+                if create == 0: #se è il primo giocatore a connettersi
+                    create=1 #imposto create a 1
+                    global mazzo_uno 
+                    mazzo_uno = crea_mazzo_uno() #creo mazzo
+                    global mazzo_temp 
+                    mazzo_temp = mazzo_uno #creo mazzo temporaneo
                     print(mazzo_uno)
+                    global cardCenter
+                    cardCenter=random.choice(mazzo_temp) #pesco carta centrale
+                    mazzo_tavolo.append(cardCenter) #aggiungo carta centrale al mazzo del tavolo
+                    mazzo_temp.remove(cardCenter) #rimuovo carta centrale dal mazzo temporaneo
                     global numeroTurno
-                    numeroTurno=1
-                # Setta la variabile condivisa
-                #shared_message.set(received_message)
+                    numeroTurno = 1 #imposto numero turno a 1
+
                
                      
-            elif game==True and received_message.strip().split(";")[0]=="game":
-                for numero in range(clients):
-                    cardArray=[]
-                    cards,cardArray=create_seven()
-                    conferma_message= received_message.strip().split(";")[1]+";" +cards + "\r\n"
+            elif game == True and received_message.strip().split(";")[0] == "game": #se il messaggio ricevuto è game
+                    cardArray = [] #creo array di carte
+                    cards, cardArray = create_seven()   #creo 7 carte
+                    conferma_message = received_message.strip().split(";")[1] + ";" + cards + "\r\n" #invio messaggio di conferma
                     print(conferma_message)
-
-
-                    giocatori[numero].imposta_mazzo(cardArray)
-                    #socketTemp=giocatori[numero].get_c_socket()
-                     #client_socket.sendall(conferma_message.encode())
-
-                    msg.send_messages(received_message.strip().split(";")[1],conferma_message,giocatori)
-                # 30 secondi di attesa dei Client 2 per Debug se mi scordo rimarranno 2
-                time.sleep(2)
-                for numero in range(clients):
-                    msg.send_messages(giocatori[numero].get_nick(),"GO"+"\r\n",giocatori)
+                    
+                    indexGiocatore = -1 #imposto indice giocatore a -1
+                    for numero in range(clients):
+                        if giocatori[numero].get_nick() == received_message.strip().split(";")[1]: #se il nick del giocatore è uguale al nick del messaggio
+                            indexGiocatore= numero #imposto indice giocatore a numero
+                            
+                    giocatori[indexGiocatore].imposta_mazzo(cardArray) #imposto mazzo del giocatore
+                    msg.send_messages(received_message.strip().split(";")[1], conferma_message, giocatori) #invio messaggio di conferma
+                
+                    time.sleep(10) #attendo 10 secondi
+                    global accept_connections 
+                    accept_connections = False #imposto accept_connections a false
+                    for numero in range(clients): #per ogni giocatore
+                        msg.send_messages(giocatori[numero].get_nick(),"GO"+"\r\n",giocatori) #invio messaggio GO
                     
                     
                     
             elif game==True and received_message.strip().split(";")[1]=="first":
-                card=random.choice(mazzo_temp)
-                mazzo_tavolo.append(card)
-                conferma_message = card +";"+str(clients-1)+ "\r\n"   #invio carta centrale+ numero di avversari
+                conferma_message = "CentralCard;"+cardCenter +";"+str(clients-1)+ "\r\n"   #invio carta centrale+ numero di avversari
+                print(f"Invio: {conferma_message}")
                 
                 for numero in range(clients):
                     msg.send_messages(giocatori[numero].get_nick(),conferma_message,giocatori)
                 
-                #client_socket.sendall(conferma_message.encode())
-            
+                
             elif game==True and received_message.strip().split(";")[1]=="pesca":
                 #controllo se turno corretto
                 nickClient = received_message.strip().split(";")[0]
@@ -99,8 +102,8 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
 
                 giocatoreClient.aggiungi_carta(card_pescata)               
                 #manda solo carta pescata 
-                conferma_message=nickClient+";"+card_pescata
-                conferma_message = nickClient + ";" + "mazzo" + ";" +giocatoreClient.getMazzoToString()+ "\r\n"
+                conferma_message="pesca;"+nickClient+";"+card_pescata+"\r\n"
+                print(f"Invio: {conferma_message}")
                 msg.send_messages(nickClient,conferma_message,giocatori)
                 spostaTurno(1,cambio_verso= False)
                 
@@ -152,6 +155,12 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                     conferma_message = "ok"+"\r\n"
 
                     msg.send_messages(nickClient,conferma_message,giocatori)
+                    
+                    for numero in range(clients):
+                        conferma_message = "CentralChangeCard;"+card_lasciata+"\r\n"
+                        msg.send_messages(giocatori[numero].get_nick(),conferma_message,giocatori)
+                        print(f"Invio: {conferma_message}")
+                        
                     print("5")
 
                     spostaTurno(1,cambio_verso= False)
