@@ -1,5 +1,5 @@
 import threading
-
+import server as svr
 
 # Aggiungi un blocco per la sincronizzazione
 giocatori_lock = threading.Lock()
@@ -26,13 +26,18 @@ def send_messages(giocatore_nick, messaggio, giocatori):
 def listen_for_clients(server_socket, shared_message, shutdown_event, target, giocatori):
     try:
         while not shutdown_event.is_set():
-            client_socket, client_address = server_socket.accept()
-            print(f"Connessione accettata da {client_address}")
+            if svr.accept_connections == True:
+                
+             client_socket, client_address = server_socket.accept()
+             print(f"Connessione accettata da {client_address}")
             
-            print(str(0))
+             print(str(0))
             
-            client_thread = threading.Thread(target=target, args=(client_socket, shared_message, shutdown_event, giocatori))
-            client_thread.start()
+             client_thread = threading.Thread(target=target, args=(client_socket, shared_message, shutdown_event, giocatori))
+             client_thread.start()
+            else:
+                print("Connessioni non accettate")
+            
 
     except Exception as e:
         print(f"Errore durante l'ascolto dei client: {e}")
