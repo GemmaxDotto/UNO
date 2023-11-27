@@ -28,10 +28,10 @@ public class GameManaging {
     }
     public void startGame(){
         client = new TCPClient("localhost", 666);
-        Join();
+        JoinParty();
     }
 
-    public void Join() {
+    public void JoinParty() {
 
         NickNameWindow nicknameW = new NickNameWindow();
         nickNameString = nicknameW.showInputDialog();
@@ -72,16 +72,25 @@ public class GameManaging {
         }
 
         threadMsg = new threadMsg(client, cond);
-        threadMsg.start();// thread per ricezioni msg
+        threadMsg.run();// thread per ricezioni msg
 
         WaitingWindow wait = new WaitingWindow(cond);
         wait.setVisible(true);
 
         client.sendMessage("CentralCard;first");
-        String mess = client.receiveMessage();
-        cond.tempCard = fromString(mess.strip().split(";")[0]);
-        numeroAvv = Integer.parseInt(mess.strip().split(";")[1]);
 
+        waitCentral();
+
+        /* String mess = client.receiveMessage();
+        cond.tempCard = fromString(mess.strip().split(";")[0]); 
+        numeroAvv = Integer.parseInt(mess.strip().split(";")[1]);//3V;1 */
+
+    }
+
+    private void waitCentral() {
+        while (cond.tempCard == null) {
+            System.out.println("attendo carta centrale");
+        }
     }
 
     private void Startgame(String myCardString) {
@@ -146,9 +155,6 @@ public class GameManaging {
 
     }
 
-    public static void receivedCard() {
-        // client.sendMessage(tempCard.toString());
-    }
 
     public void onCardClicked(UnoCard card) {
         System.out.println("CIAOOOO");
@@ -166,7 +172,7 @@ public class GameManaging {
         this.clickedCard_tmp = clickedCard;
         if (!clickedCard.getColore().equals("K") && !clickedCard.toString().equals(cond.tempCard.toString())) {
             client.sendMessage(nickNameString + ";" + "lascia;" + clickedCard.toString());
-           
+           gestisciRispostaLascia();
         }
     }
 
@@ -176,12 +182,25 @@ public class GameManaging {
         
         setCenterCard(this.clickedCard_tmp);
         myCards.remove(this.clickedCard_tmp);
-        cond.tempCard = this.clickedCard_tmp;
+        setCenterCard(clickedCard_tmp);
 
         GUI.updatePlayerCards();
         GUI.updateCentralCard();    
 
         this.clickedCard_tmp=null;
         
+    }
+
+    public void gestisciRispostaPesca(String drawCardString) {
+        UnoCard drawCard = fromString(drawCardString);
+        myCards.add(drawCard);
+       
+        GUI.updatePlayerCards();
+ 
+    }
+
+    public void gestisciRispostaCambia(String string) {
+        setCenterCard(fromString(string));
+        GUI.updateCentralCard();
     }
 }
