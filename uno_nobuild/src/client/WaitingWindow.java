@@ -30,7 +30,7 @@ public class WaitingWindow extends JDialog {
                     while (!cond.Game.isOn()) {
                         try {
 
-                            Thread.sleep(500);
+                            Thread.sleep(1000);
                         } catch (InterruptedException ex) {
                             ex.printStackTrace();
                         }
