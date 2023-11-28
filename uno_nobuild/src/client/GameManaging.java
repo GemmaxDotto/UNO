@@ -10,6 +10,7 @@ public class GameManaging {
     // ArrayList<UnoCard> carteButtate = new ArrayList<UnoCard>();
     int numeroAvv;
     boolean on = true;
+    boolean unoClicked=false;
     String nickNameString;
     ClientGUI GUI;
     Condivisa cond;
@@ -151,8 +152,6 @@ public class GameManaging {
     public void setCenterCard(UnoCard card) {
 
         cond.tempCard = card;
-
-
     }
 
 
@@ -171,8 +170,16 @@ public class GameManaging {
     public void handleLascia(UnoCard clickedCard) {
         this.clickedCard_tmp = clickedCard;
         if (!clickedCard.getColore().equals("K") && !clickedCard.toString().equals(cond.tempCard.toString())) {
-            client.sendMessage(nickNameString + ";" + "lascia;" + clickedCard.toString());
-           gestisciRispostaLascia();
+            if(this.unoClicked){
+                client.sendMessage(nickNameString + ";" + "lascia;" + clickedCard.toString()+";uno");
+            }
+            else{
+                client.sendMessage(nickNameString + ";" + "lascia;" + clickedCard.toString());
+            }
+            
+            System.out.println("inviata");
+            gestisciRispostaLascia();
+
         }
     }
 
@@ -202,5 +209,6 @@ public class GameManaging {
     public void gestisciRispostaCambia(String string) {
         setCenterCard(fromString(string));
         GUI.updateCentralCard();
+        System.out.println("printed");
     }
 }
