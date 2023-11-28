@@ -1,3 +1,2 @@
 -evitare le carte speciali come +4,+2 ... come carta sul tavolo
--continuare implementazione thread e gestione variabili su condivisa del client
--bug nel client nella ricezione dell'ok dopo l'invio "lascia"; il server invia il messaggio senza errori
+-salta turno da stampare a schermo se è il giocaotore in questione ad essere bloccato
