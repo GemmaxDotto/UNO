@@ -1,0 +1,24 @@
+@startuml
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor Player as "Player"
+
+rectangle "Uno Game" {
+  usecase "Start Game" as start
+  usecase "First" as first
+  usecase "Lascia" as playCard
+  usecase "Pesca" as drawCard
+  usecase "Chat" as chat
+  usecase "End Game" as end
+
+  Player --> start
+  Player --> first
+  Player --> playCard
+  Player --> drawCard
+  Player --> chat
+  Player --> end
+}
+
+@enduml

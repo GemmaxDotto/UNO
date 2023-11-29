@@ -1,0 +1,49 @@
+@startuml
+
+class Player {
+  - nick: String
+  - numero_carte: Int
+  - c_socket: Int
+  - mazzo: List<String>
+  + rimuovi_carta(card: Card): boolean
+  + aggiungi_carta(card: Card): void
+}
+
+class Card {
+  - color: String
+  - value: String
+  - isSpeciale : boolean
+
+}
+
+class GameServer {
+- clients : Int
+- create : Int
+- mazzo_uno : List<Card>
+- mazzo_temp : List<Card>
+- game : boolean
+- cardCenter : String
+- giocatori : List<Player>
+- mazzo_tavolo : List<Card>
+- numeroTurno : Int
+- verso_turno : boolean
+- accept_connections : boolean
++ startGame(): void
++ checkIsValid(card: Card): boolean
++ checkCartaSpeciale(card: Card): boolean
++ lasciaCarta(card: Card,player: Player): Card
++ gestisciSpeciale(card: Card): String,boolean,String
++ endGame(): void
++ pesca_carta(): Card
++ create_seven(): List<Card>
++ crea_mazzo_uno(): void
++ getGiocatoreSuccessivo(): Player
++ spostaTurno(Int: numero_da_aggiungere,boolean: cambio_verso): void
+}
+
+Player --> Card : controls
+GameServer --> Card : controls
+Player --> GameServer : communicates with
+GameServer --> Player : controls
+
+@enduml

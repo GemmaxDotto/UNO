@@ -1,0 +1,61 @@
+@startuml
+
+actor Player as "Player"
+participant Client as "Client"
+participant Server as "Server"
+
+Player -> Client : Connect to Server
+activate Client
+Client -> Server : Request Game Start
+activate Server
+Server --> Client : Start Game
+Client --> Player : Notify Game Start
+deactivate Server
+deactivate Client
+
+Player -> Client : Connect to Server
+activate Client
+Client -> Server : Request First
+activate Server
+Server --> Client : Send cards
+Client --> Player : Notify First
+deactivate Server
+deactivate Client
+
+Player -> Client : Play Card
+activate Client
+Client -> Server : Send Played Card
+activate Server
+Server --> Client : Validate Card
+Client --> Player : Card Validated
+deactivate Server
+deactivate Client
+
+Player -> Client : Draw Card
+activate Client
+Client -> Server : Request Draw
+activate Server
+Server --> Client : Sent Card
+Client --> Player : Received Card
+deactivate Server
+deactivate Client
+
+Player -> Client : Declare Uno Sending Penultimate card
+activate Client
+Client -> Server : Send Uno Declaration
+activate Server
+Server --> Client : Acknowledge Uno
+Client --> Player : Uno Acknowledged
+deactivate Server
+deactivate Client
+
+Player -> Client : Send Last Card
+activate Client
+Client -> Server : Send Played Card
+activate Server
+Server --> Client : Game Win
+Client --> Player : Notify Game Win
+deactivate Server
+deactivate Client
+
+@enduml
