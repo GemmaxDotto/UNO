@@ -126,11 +126,13 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                         msgSpeciale,carte,carteStr = gestisciSpeciale(card_lasciata) 
                         lasciaCarta(card_lasciata,pos)
 
-
+                        global lastCard
                         if (lastCard and giocatoreClient.get_numero_carte()):
                             msg="vittoria;"+nickClient
                             msg.send_messages(nickClient,msg,giocatori)  
-                            
+                        elif lastCard:
+                            lastCard=False
+
                         print(msgSpeciale)
                         if len(msgSpeciale)>0:     
                             for numero in range(clients):
@@ -153,7 +155,8 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                     if (lastCard and giocatoreClient.get_numero_carte()):
                         msg="vittoria;"+nickClient
                         msg.send_messages(nickClient,msg,giocatori)
-
+                    elif lastCard:
+                            lastCard=False
 
                         
 
