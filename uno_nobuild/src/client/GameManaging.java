@@ -154,11 +154,6 @@ public class GameManaging {
         cond.tempCard = card;
     }
 
-
-    public void onCardClicked(UnoCard card) {
-        System.out.println("CIAOOOO");
-    }
-
     public boolean isOn() {
         return on;
     }
@@ -176,10 +171,7 @@ public class GameManaging {
             else{
                 client.sendMessage(nickNameString + ";" + "lascia;" + clickedCard.toString());
             }
-            
             System.out.println("inviata");
-            gestisciRispostaLascia();
-
         }
     }
 
@@ -187,12 +179,12 @@ public class GameManaging {
         
         //todo gestire ricezione mess speciali
         
-        setCenterCard(this.clickedCard_tmp);
-        myCards.remove(this.clickedCard_tmp);
-        setCenterCard(clickedCard_tmp);
+        //setCenterCard(this.clickedCard_tmp);
+        myCards.remove(clickedCard_tmp);
+        //setCenterCard(clickedCard_tmp);
 
         GUI.updatePlayerCards();
-        GUI.updateCentralCard();    
+        //GUI.updateCentralCard();    
 
         this.clickedCard_tmp=null;
         
@@ -209,6 +201,7 @@ public class GameManaging {
     public void gestisciRispostaCambia(String string) {
         setCenterCard(fromString(string));
         GUI.updateCentralCard();
+        //GUI.updatePlayerCards();
         System.out.println("printed");
     }
 }

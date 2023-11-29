@@ -1,27 +1,20 @@
 
-import org.w3c.dom.events.MouseEvent;
-
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JPanel;
 
 public class CardComponent extends JButton {
     private UnoCard card;
     Condivisa cond;
     ClientGUI GUI;
-    
 
-
-   
-    public CardComponent(UnoCard card,Condivisa cond) {
+    public CardComponent(UnoCard card, Condivisa cond) {
 
         this.card = card;
         this.cond = cond;
-
 
         ImageIcon originalIcon = new ImageIcon(card.getImagePath());
         Image originalImage = originalIcon.getImage();
@@ -43,7 +36,6 @@ public class CardComponent extends JButton {
         @Override
         public void mouseClicked(java.awt.event.MouseEvent e) {
             UnoCard clickedCard = getCard();
-
 
             cond.Game.handleLascia(clickedCard);
 

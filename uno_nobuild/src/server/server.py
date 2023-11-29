@@ -56,7 +56,11 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                     mazzo_temp = mazzo_uno #creo mazzo temporaneo
                     print(mazzo_uno)
                     global cardCenter
-                    cardCenter=random.choice(mazzo_temp) #pesco carta centrale
+                    cardCenter=random.choice(mazzo_temp) #pesco una carta dal mazzo temporaneo
+                    while(checkCartaSpeciale(cardCenter)==True): #se la carta centrale è speciale
+                        cardCenter=random.choice(mazzo_temp) #pesco una nuova carta
+                    
+                    
                     mazzo_tavolo.append(cardCenter) #aggiungo carta centrale al mazzo del tavolo
                     mazzo_temp.remove(cardCenter) #rimuovo carta centrale dal mazzo temporaneo
                     global numeroTurno
@@ -102,7 +106,7 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
 
                 giocatoreClient.aggiungi_carta(card_pescata)               
                 #manda solo carta pescata 
-                conferma_message=nickClient+";pesca;"+card_pescata+"\r\n"
+                conferma_message="pesca;"+nickClient+";"+card_pescata+"\r\n"
                 print(f"Invio: {conferma_message}")
                 msg.send_messages(nickClient,conferma_message,giocatori)
                 spostaTurno(1,cambio_verso= False)
@@ -128,7 +132,7 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                             giocatoreSuccessivo = getGiocatoreSuccessivo()
                             for i in range(len(carte)):
                                 giocatoreSuccessivo.aggiungi_carta(carte[i])
-                            conferma_message = nickClient + ";" + "carte_pescate" + ";" +carteStr+"\r\n"
+                            conferma_message ="carte_pescate" +  ";" + nickClient + ";" +carteStr+"\r\n"
                             msg.send_messages(nickClient,conferma_message,giocatori)
                             spostaTurno(1,cambio_verso= False)
                 elif correct:
@@ -147,7 +151,7 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                             card_pescata_tmp = pesca_carta()
                             cardPescate+="-"+card_pescata_tmp
                             giocatoreClient.aggiungi_carta(card_pescata_tmp)
-                        msg.send_messages(nickClient,nickClient+";errore;uno_non_detto;"+cardPescate,giocatori)
+                        msg.send_messages(nickClient,"errore;"+nickClient+";uno_non_detto;"+cardPescate,giocatori)
 
                     #invia solo ok non mazzo
 
@@ -157,16 +161,16 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                     msg.send_messages(nickClient,conferma_message,giocatori)
                     
                     for numero in range(clients):
-                        conferma_message = giocatori[numero].get_nick()+";CentralChangeCard;"+card_lasciata+"\r\n"
-                        msg.send_messages(giocatori[numero].get_nick(),conferma_message,giocatori)
-                        print(f"Invio: {conferma_message}")
+                     conferma_message = "CentralChangeCard;"+giocatori[numero].get_nick()+";"+card_lasciata+"\r\n"
+                     msg.send_messages(giocatori[numero].get_nick(),conferma_message,giocatori)
+                    print(f"Invio: {conferma_message}")
                         
 
                     spostaTurno(1,cambio_verso= False)
                 
                 else:
                     #carta non valida
-                    message = nickClient+";errore;carta_non_valida"
+                    message = "errore;"+nickClient+";carta_non_valida"
                     print("non valida")            
             else:
                 altro_message = "err"
@@ -379,7 +383,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-#tempCard=fromString(mess.split(";")[1]);
