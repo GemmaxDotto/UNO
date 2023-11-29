@@ -17,6 +17,7 @@ mazzo_tavolo=[]
 numeroTurno=1
 verso_turno=True
 accept_connections=True
+lastCard=False
 
 #barrier = threading.Barrier(2)
 
@@ -122,7 +123,14 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                 
                 nickClient = received_message.strip().split(";")[0]
                 if speciale and correct:
-                        msgSpeciale,carte,carteStr = gestisciSpeciale(card_lasciata)    
+                        msgSpeciale,carte,carteStr = gestisciSpeciale(card_lasciata) 
+                        lasciaCarta(card_lasciata,pos)
+
+
+                        if (lastCard and giocatoreClient.get_numero_carte()):
+                            msg="vittoria;"+nickClient
+                            msg.send_messages(nickClient,msg,giocatori)  
+                            
                         print(msgSpeciale)
                         if len(msgSpeciale)>0:     
                             for numero in range(clients):
@@ -136,12 +144,20 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                             msg.send_messages(nickClient,conferma_message,giocatori)
                             spostaTurno(1,cambio_verso= False)
                 elif correct:
-
-
+                    global lastCard
+                    
                     giocatoreClient,pos = searchClient(nickClient) 
                     print(giocatoreClient.getMazzoToString())
                     lasciaCarta(card_lasciata,pos)
                     
+                    if (lastCard and giocatoreClient.get_numero_carte()):
+                        msg="vittoria;"+nickClient
+                        msg.send_messages(nickClient,msg,giocatori)
+
+
+                        
+
+
                     print(received_message.strip())
                     
 
@@ -152,7 +168,12 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                             cardPescate+="-"+card_pescata_tmp
                             giocatoreClient.aggiungi_carta(card_pescata_tmp)
                         msg.send_messages(nickClient,"errore;"+nickClient+";uno_non_detto;"+cardPescate,giocatori)
+                    elif giocatoreClient.get_numero_carte()==1 and received_message.strip().split(";")[3]=="uno":
+                        global lastCard
+                        lastCard=True
 
+
+                        
                     #invia solo ok non mazzo
 
 
