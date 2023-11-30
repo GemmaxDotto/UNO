@@ -105,6 +105,13 @@ public class threadMsg extends Thread {
                             }
                             System.out.println("carte ricevute");
                         }
+                        if (receivedMessage != null && receivedMessage.strip().split(";")[0].equals("CarteAvversari")) {
+                            String nickTmp=receivedMessage.strip().split(";")[1];
+                            if(!nickTmp.split("_")[1].equals(cond.Game.nickNameString)){
+                            cond.Game.gestisciGUIAvv(receivedMessage.strip().split(";")[2]);
+                            System.out.println("carte avversari ricevute");
+                            }
+                        }
                     }
 
                     Thread.sleep(500);
