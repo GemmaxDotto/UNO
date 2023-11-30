@@ -13,8 +13,12 @@ public class ClientGUI extends JFrame {
     JPanel centerCardPanel;
     JPanel cardsPanel;
     JPanel playerCardsPanel;
-    JPanel opponentCardsPanel;
+   // JPanel opponentCardsPanel;
     Condivisa cond;
+    JPanel topOpponentCardsPanel;
+    JPanel rightOpponentCardsPanel;
+    JPanel leftOpponentCardsPanel;
+    CardComponent opponentCard;
 
     public ClientGUI() throws IOException {
         super("Uno Game Client");
@@ -71,7 +75,7 @@ public class ClientGUI extends JFrame {
         unoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cond.Game.unoClicked=true;
+                cond.Game.unoClicked = true;
             }
         });
         chatButtonPanel.add(unoButton);
@@ -137,7 +141,7 @@ public class ClientGUI extends JFrame {
 
         // Creazione del pannello per le carte del centro (playerCards - carta centrale
         // - opponentCards)
-        
+
         cardsPanel.add(centerCardPanel, BorderLayout.CENTER);
         cardsPanel.add(playerCardsPanel, BorderLayout.SOUTH);
 
@@ -148,13 +152,18 @@ public class ClientGUI extends JFrame {
 
     private void setupOpponentPanels() {
         // Creazione del pannello per le carte degli avversari sopra il centro
-        JPanel topOpponentCardsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        topOpponentCardsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
         // Creazione del pannello per le carte degli avversari a destra del centro
-        JPanel rightOpponentCardsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        rightOpponentCardsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
         // Creazione del pannello per le carte degli avversari a sinistra del centro
-        JPanel leftOpponentCardsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        leftOpponentCardsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+        // Crea nuove istanze di CardComponent per ogni pannello
+        opponentCard = new CardComponent(new UnoCard("B", "K", true), cond);
+
+        opponentCard.setPreferredSize(new Dimension(50, 80));
 
         for (int i = 0; i < 7; i++) {
             // Crea nuove istanze di CardComponent per ogni pannello
@@ -184,14 +193,6 @@ public class ClientGUI extends JFrame {
 
         }
 
-        
-        /* JPanel allOpponentCardsPanel = new JPanel(new BorderLayout());
-        allOpponentCardsPanel.add(topOpponentCardsPanel, BorderLayout.NORTH);
-        allOpponentCardsPanel.add(rightOpponentCardsPanel, BorderLayout.EAST);
-        allOpponentCardsPanel.add(leftOpponentCardsPanel, BorderLayout.WEST); */
-
-        // pannello allOpponentCardsPanel aggiunto al mainPanel
-        //mainPanel.add(allOpponentCardsPanel, BorderLayout.NORTH);
     }
 
     public void updatePlayerCards() {
@@ -203,6 +204,42 @@ public class ClientGUI extends JFrame {
         }
         playerCardsPanel.revalidate();
         playerCardsPanel.repaint();
+    }
+
+    public void updateOpponentCards() {
+
+        if (topOpponentCardsPanel != null && rightOpponentCardsPanel != null && leftOpponentCardsPanel != null) {   
+            topOpponentCardsPanel.removeAll(); // Rimuozione tutti i componenti attuali
+            rightOpponentCardsPanel.removeAll(); // Rimuozione tutti i componenti attuali
+            leftOpponentCardsPanel.removeAll(); // Rimuozione tutti i componenti attuali
+        }
+            
+
+        if (cond.Game.numeroAvv == 1) {
+            for (int i = 0; i < cond.Game.avvCards.get(0); i++) {
+                topOpponentCardsPanel.add(opponentCard);
+                cardsPanel.add(topOpponentCardsPanel, BorderLayout.NORTH);
+            }
+        }
+        if (cond.Game.numeroAvv == 2) {
+            for (int i = 0; i < cond.Game.avvCards.get(1); i++) {
+                rightOpponentCardsPanel.add(opponentCard);
+                cardsPanel.add(rightOpponentCardsPanel, BorderLayout.EAST);
+            }
+        }
+        if (cond.Game.numeroAvv == 3) {
+            for (int i = 0; i < cond.Game.avvCards.get(2); i++) {
+                leftOpponentCardsPanel.add(opponentCard);
+                cardsPanel.add(opponentCard, BorderLayout.WEST);
+            }
+        }
+        topOpponentCardsPanel.revalidate();
+        topOpponentCardsPanel.repaint();
+        rightOpponentCardsPanel.revalidate();
+        rightOpponentCardsPanel.repaint();
+        leftOpponentCardsPanel.revalidate();
+        leftOpponentCardsPanel.repaint();
+        
     }
 
     public void updateCentralCard() {
