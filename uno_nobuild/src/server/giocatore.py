@@ -26,7 +26,6 @@ class giocatore:
         self.mazzo=cards
         self.imposta_numero_carte(len(self.mazzo))
 
-    
     def imposta_numero_carte(self, nuovo_numero_carte):
         self.numero_carte = nuovo_numero_carte
 
@@ -41,6 +40,8 @@ class giocatore:
 
     def getMazzo(self):
         return self.mazzo
+
+
 
     
 
