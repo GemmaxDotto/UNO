@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public class GameManaging {
     TCPClient client;
     ArrayList<UnoCard> myCards = new ArrayList<UnoCard>();
+    ArrayList<Integer> avvCards = new ArrayList<Integer>();
     // ArrayList<UnoCard> carteButtate = new ArrayList<UnoCard>();
     int numeroAvv;
     boolean on = true;
@@ -204,4 +205,12 @@ public class GameManaging {
         //GUI.updatePlayerCards();
         System.out.println("printed");
     }
+
+    public void gestisciGUIAvv(String numCarte) {
+        for (int i = 0; i < numeroAvv; i++) {
+            avvCards.add(Integer.parseInt(numCarte));
+        }
+        GUI.updateOpponentCards();
+    }
+
 }
