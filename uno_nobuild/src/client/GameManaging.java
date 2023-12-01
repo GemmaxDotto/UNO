@@ -165,7 +165,7 @@ public class GameManaging {
 
     public void handleLascia(UnoCard clickedCard) {
         this.clickedCard_tmp = clickedCard;
-        if (!clickedCard.getColore().equals("K") && !clickedCard.toString().equals(cond.tempCard.toString())) {
+        if (!clickedCard.getColore().equals("K")) {
             if(this.unoClicked){
                 client.sendMessage(nickNameString + ";" + "lascia;" + clickedCard.toString()+";uno");
             }
