@@ -65,13 +65,16 @@ public class GUIClientSTART extends JFrame {
 
         rulesButton.addActionListener(e -> {
 
-            System.out.println("Il pulsante RULES è stato premuto!");
+            RulesDialog rulesDialog = new RulesDialog(this);
+            rulesDialog.setVisible(true);
 
         });
 
         creditsButton.addActionListener(e -> {
 
-            System.out.println("Il pulsante CREDITS è stato premuto!");
+            CreditsDialog creditsDialog = new CreditsDialog(this);
+            creditsDialog.setVisible(true);
+
 
         });
 
