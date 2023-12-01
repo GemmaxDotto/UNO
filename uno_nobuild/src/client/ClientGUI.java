@@ -13,12 +13,13 @@ public class ClientGUI extends JFrame {
     JPanel centerCardPanel;
     JPanel cardsPanel;
     JPanel playerCardsPanel;
-   // JPanel opponentCardsPanel;
+    // JPanel opponentCardsPanel;
     Condivisa cond;
     JPanel topOpponentCardsPanel;
     JPanel rightOpponentCardsPanel;
     JPanel leftOpponentCardsPanel;
     CardComponent opponentCard;
+    JTextArea chatArea;
 
     public ClientGUI() throws IOException {
         super("Uno Game Client");
@@ -41,7 +42,7 @@ public class ClientGUI extends JFrame {
         // Creazione del pannello per la chat
         JPanel chatPanel = new JPanel(new BorderLayout());
 
-        JTextArea chatArea = new JTextArea();
+        chatArea = new JTextArea();
         chatArea.setEditable(false);
         chatArea.setLineWrap(true);
         DefaultCaret caret = (DefaultCaret) chatArea.getCaret();
@@ -103,13 +104,13 @@ public class ClientGUI extends JFrame {
 
         mainPanel.setBackground(new Color(255, 255, 153)); // Imposta lo sfondo giallo
 
-        // Creazione del pannello per la carta al centro
         centerCardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-        UnoCard centerCard = cond.tempCard; // carta al centro
+        UnoCard centerCard = cond.tempCard;
         CardComponent centerCardComponent = new CardComponent(centerCard, cond);
         centerCardPanel.add(centerCardComponent);
-        // Aggiungi la nuova carta accanto alla carta centrale
+
+        // Aggiunta carta Pesca accanto alla carta centrale
         UnoCard newCard = new UnoCard("B", "K", true);
         CardComponent newCardComponent = new CardComponent(newCard, cond);
         centerCardPanel.add(newCardComponent);
@@ -119,8 +120,16 @@ public class ClientGUI extends JFrame {
         pescaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 cond.Game.handlePesca();
+            }
+        });
+
+        JButton passoButton = new JButton("Passo");
+        centerCardPanel.add(passoButton);
+        passoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cond.Game.handlePasso();
             }
         });
 
@@ -207,40 +216,45 @@ public class ClientGUI extends JFrame {
     }
 
     public void updateOpponentCards() {
-
-        if (topOpponentCardsPanel != null && rightOpponentCardsPanel != null && leftOpponentCardsPanel != null) {   
-            topOpponentCardsPanel.removeAll(); // Rimuozione tutti i componenti attuali
-            rightOpponentCardsPanel.removeAll(); // Rimuozione tutti i componenti attuali
-            leftOpponentCardsPanel.removeAll(); // Rimuozione tutti i componenti attuali
-        }
-            
-
+        // Rimuovi tutti i componenti dai pannelli prima di aggiungerne di nuovi
+        topOpponentCardsPanel.removeAll();
+        rightOpponentCardsPanel.removeAll();
+        leftOpponentCardsPanel.removeAll();
+    
         if (cond.Game.numeroAvv == 1) {
             for (int i = 0; i < cond.Game.avvCards.get(0); i++) {
-                topOpponentCardsPanel.add(opponentCard);
-                cardsPanel.add(topOpponentCardsPanel, BorderLayout.NORTH);
+                CardComponent opponentCardTop = new CardComponent(new UnoCard("B", "K", true), cond);
+                opponentCardTop.setPreferredSize(new Dimension(50, 80));
+                topOpponentCardsPanel.add(opponentCardTop);
             }
+            cardsPanel.add(topOpponentCardsPanel, BorderLayout.NORTH);
+            topOpponentCardsPanel.revalidate();
+            topOpponentCardsPanel.repaint();
         }
+    
         if (cond.Game.numeroAvv == 2) {
             for (int i = 0; i < cond.Game.avvCards.get(1); i++) {
-                rightOpponentCardsPanel.add(opponentCard);
-                cardsPanel.add(rightOpponentCardsPanel, BorderLayout.EAST);
+                CardComponent opponentCardRight = new CardComponent(new UnoCard("B", "K", true), cond);
+                opponentCardRight.setPreferredSize(new Dimension(50, 80));
+                rightOpponentCardsPanel.add(opponentCardRight);
             }
+            cardsPanel.add(rightOpponentCardsPanel, BorderLayout.EAST);
+            rightOpponentCardsPanel.revalidate();
+            rightOpponentCardsPanel.repaint();
         }
+    
         if (cond.Game.numeroAvv == 3) {
             for (int i = 0; i < cond.Game.avvCards.get(2); i++) {
-                leftOpponentCardsPanel.add(opponentCard);
-                cardsPanel.add(opponentCard, BorderLayout.WEST);
+                CardComponent opponentCardLeft = new CardComponent(new UnoCard("B", "K", true), cond);
+                opponentCardLeft.setPreferredSize(new Dimension(50, 80));
+                leftOpponentCardsPanel.add(opponentCardLeft);
             }
+            cardsPanel.add(leftOpponentCardsPanel, BorderLayout.WEST);
+            leftOpponentCardsPanel.revalidate();
+            leftOpponentCardsPanel.repaint();
         }
-        topOpponentCardsPanel.revalidate();
-        topOpponentCardsPanel.repaint();
-        rightOpponentCardsPanel.revalidate();
-        rightOpponentCardsPanel.repaint();
-        leftOpponentCardsPanel.revalidate();
-        leftOpponentCardsPanel.repaint();
-        
     }
+    
 
     public void updateCentralCard() {
         centerCardPanel.removeAll(); // Rimuozione tutti i componenti attuali
@@ -268,6 +282,10 @@ public class ClientGUI extends JFrame {
 
         centerCardPanel.revalidate();
         centerCardPanel.repaint();
+    }
+
+    public void aggiornaTurno(String nomeGiocatore) {
+        chatArea.append("Turno di " + nomeGiocatore + "\n");
     }
 
 }
