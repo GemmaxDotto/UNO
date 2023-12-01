@@ -168,6 +168,7 @@ public class GameManaging {
         if (!clickedCard.getColore().equals("K")) {
             if(this.unoClicked){
                 client.sendMessage(nickNameString + ";" + "lascia;" + clickedCard.toString()+";uno");
+                unoClicked=false;
             }
             else{
                 client.sendMessage(nickNameString + ";" + "lascia;" + clickedCard.toString());
