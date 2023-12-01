@@ -77,6 +77,7 @@ public class ClientGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cond.Game.unoClicked = true;
+                cond.Game.client.sendMessage("uno");
             }
         });
         chatButtonPanel.add(unoButton);
