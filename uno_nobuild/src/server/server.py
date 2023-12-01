@@ -118,14 +118,13 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                 # Invia un messaggio di errore al giocatore attuale
                  error_message = "errore;{};deve_pescare_prima_di_passare".format(player_to_draw.get_nick())
                  msg.send_messages(received_message.strip().split(";")[0], error_message, giocatori)
-                 messPrec="none;none"
+                 
                 else:
                 # Consentire al giocatore attuale di passare il turno
                 # reimposta player_to_draw a None
                  player_to_draw = None
                  spostaTurno(1,cambio_verso= False)
-                 getGiocatoreCorrente()
-                 messPrec="none;none"
+                 getGiocatoreCorrenteClient()
                 
             
             elif game==True and received_message.strip().split(";")[1]=="pesca":
@@ -134,9 +133,9 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                 nickClient = received_message.strip().split(";")[0]
                 giocatoreClient,pos = searchClient(nickClient)
                 
-                if not messPrec.strip().split(";")[1]=="pesca" and not messPrec.strip().split(";")[0]==nickClient:
-                 getGiocatoreCorrente()
-                 if giocatoreCorrente == giocatoreClient:  #controllo se turno corretto
+                 #if not messPrec.strip().split(";")[1]=="pesca" and not messPrec.strip().split(";")[0]==nickClient:
+                getGiocatoreCorrente()
+                if giocatoreCorrente == giocatoreClient:  #controllo se turno corretto
                   player_to_draw = giocatoreClient
                   card_pescata = pesca_carta()
 
@@ -147,7 +146,7 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                   msg.send_messages(nickClient,conferma_message,giocatori)
                   #il pesca non presuppone cambio turno bottone passa turno?
                   #spostaTurno(1,cambio_verso= False)
-                  messPrec=received_message.strip()
+                  #messPrec=received_message.strip()
                   HandleN_CarteAvversari(nickClient)    
                 
             elif game==True and received_message.strip().split(";")[1]=="lascia":
@@ -194,6 +193,7 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                             print(f"Invio: {conferma_message}")
                             msg.send_messages(giocatoreSuccessivo.get_nick(),conferma_message,giocatori)
                             spostaTurno(1,cambio_verso= False)
+                        getGiocatoreCorrenteClient()
                     elif correct: #se carta corretta non speciale
                     
                         giocatoreClient,pos = searchClient(nickClient) 
@@ -211,8 +211,8 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
 
                         print(received_message.strip())
                     
-
-                        if(giocatoreClient.get_numero_carte()==1 and received_message.strip().split(";")[3]!="uno"):
+                        received_messageParts = received_message.strip().split(";")
+                        if(giocatoreClient.get_numero_carte()==1 and len(received_messageParts)<3):
                             cardPescate = ""
                             for i in range(0,3):
                                 card_pescata_tmp = pesca_carta()
@@ -233,12 +233,13 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                         
 
                         spostaTurno(1,cambio_verso= False) 
+                        getGiocatoreCorrenteClient()
                 
                     else:
                         #carta non valida
                         message = "errore;"+nickClient+";carta_non_valida"
                         print("non valida")        
-                    HandleN_CarteAvversari(nickClient)   
+                HandleN_CarteAvversari(nickClient)   
                     
             elif game==True and received_message.strip().split(";")[0]=="colore": 
                 global ColorC
@@ -264,10 +265,12 @@ def HandleN_CarteAvversari(nickClient):
     Args:
         nickClient (str): Il nickname del giocatore corrente
     """
+    giocatore_tmp,pos=searchClient(nickClient)
     for numero in range(clients):
-            MessagexGUI="CarteAvversari;AVV_"+nickClient+";"+str(giocatori[numero].get_numero_carte())+"\r\n"
-            msg.send_messages(giocatori[numero].get_nick(),MessagexGUI,giocatori)
-            print(f"Invio: {MessagexGUI}")
+        if not giocatori[numero].get_nick()==nickClient:
+             MessagexGUI="CarteAvversari;AVV_"+nickClient+";"+str(giocatore_tmp.get_numero_carte())+"\r\n"
+             msg.send_messages(giocatori[numero].get_nick(),MessagexGUI,giocatori)
+             print(f"Invio: {MessagexGUI}")
                      
 def spostaTurno(numero,cambio_verso):
     """
@@ -315,7 +318,7 @@ def getGiocatoreSuccessivo():
     nTurnoTMP = addTurno(1, verso_turno, numeroTurno)
     if nTurnoTMP > clients:
      nTurnoTMP -= clients
-    player = giocatori[nTurnoTMP]
+    player = giocatori[nTurnoTMP-1]
     return player
 
 def getGiocatoreCorrente():
@@ -326,8 +329,11 @@ def getGiocatoreCorrente():
     """
     global giocatoreCorrente
     giocatoreCorrente = giocatori[numeroTurno - 1]
+    return giocatoreCorrente
+
+def getGiocatoreCorrenteClient():
     for numero in range(clients):
-        MessagexGUI = "Turno;"+giocatoreCorrente.get_nick() + "\r\n"
+        MessagexGUI = "Turno;"+getGiocatoreCorrente().get_nick() + "\r\n"
         msg.send_messages(giocatori[numero].get_nick(),MessagexGUI,giocatori)
         print(f"Invio: {MessagexGUI}")
 
@@ -357,8 +363,8 @@ def gestisciSpeciale(card):
         msg = "speciale;" + nickGiocatoreSuccessivo + ";pesca_due"
         pesca = 2
     elif card == "FD":
-        nickGiocatoreSuccessivo = getGiocatoreSuccessivo().get_nick()
-        msg = "speciale;" + nickGiocatoreSuccessivo + ";pesca_quattro"
+        nickGiocatore = getGiocatoreCorrente().get_nick()
+        msg = "speciale;" + nickGiocatore + ";pesca_quattro"
         pesca = 4
     elif card == "CC":
         msg = "speciale;"+giocatoreCorrente.get_nick()+";cambia_colore"
@@ -396,6 +402,7 @@ def checkIsValid(card_lasciata):
         elif color_card_speciale == ColorC:
             correct = True
             ColorC=""
+        else: correct = True
     elif speciale and card_lasciata[0]=="F" or card_lasciata[0]=="C":
         correct = speciale
     else:   
