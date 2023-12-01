@@ -109,9 +109,15 @@ public class threadMsg extends Thread {
                             String nickTmp=receivedMessage.strip().split(";")[1];
                             if(!nickTmp.split("_")[1].equals(cond.Game.nickNameString)){
                             cond.Game.gestisciGUIAvv(receivedMessage.strip().split(";")[2]);
-                            System.out.println("carte avversari ricevute");
+                            System.out.println("carte avversari ricevute: "+ receivedMessage.strip().split(";")[2]);
                             }
                         }
+                        if (receivedMessage != null && receivedMessage.strip().split(";")[0].equals("Turno")) {
+                            cond.Game.aggiornaTurnoGUI(receivedMessage.strip().split(";")[1]);
+                            System.out.println("Turno ricevuto");
+                            
+                        }
+
                     }
 
                     Thread.sleep(500);
