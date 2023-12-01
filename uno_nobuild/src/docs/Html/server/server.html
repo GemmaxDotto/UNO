@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module server</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>server</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Cutente%5Conedrive%5Cdesktop%5Cprogetto_tecnologie%5Cuno%5Cuno_nobuild%5Csrc%5Cserver%5Cserver.py">c:\users\utente\onedrive\desktop\progetto_tecnologie\uno\uno_nobuild\src\server\server.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="messagesTCP.html">messagesTCP</a><br>
+<a href="MyTimerThread.html">MyTimerThread</a><br>
+</td><td width="25%" valign=top><a href="giocatore.html">giocatore</a><br>
+<a href="random.html">random</a><br>
+</td><td width="25%" valign=top><a href="socket.html">socket</a><br>
+<a href="threading.html">threading</a><br>
+</td><td width="25%" valign=top><a href="time.html">time</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-HandleN_CarteAvversari"><strong>HandleN_CarteAvversari</strong></a>(nickClient)</dt><dd><tt>Invia&nbsp;il&nbsp;numero&nbsp;di&nbsp;carte&nbsp;degli&nbsp;avversari&nbsp;a&nbsp;tutti&nbsp;i&nbsp;giocatori.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;nickClient&nbsp;(str):&nbsp;Il&nbsp;nickname&nbsp;del&nbsp;giocatore&nbsp;corrente</tt></dd></dl>
+ <dl><dt><a name="-StartGame"><strong>StartGame</strong></a>()</dt><dd><tt>Avvia&nbsp;il&nbsp;gioco&nbsp;UNO&nbsp;quando&nbsp;sono&nbsp;presenti&nbsp;abbastanza&nbsp;giocatori.</tt></dd></dl>
+ <dl><dt><a name="-addTurno"><strong>addTurno</strong></a>(num, verso, numTurno)</dt><dd><tt>Aggiunge&nbsp;il&nbsp;numero&nbsp;di&nbsp;turni&nbsp;al&nbsp;turno&nbsp;attuale.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;num&nbsp;(int):&nbsp;Numero&nbsp;di&nbsp;turni&nbsp;da&nbsp;aggiungere<br>
+&nbsp;&nbsp;&nbsp;&nbsp;verso&nbsp;(bool):&nbsp;Indica&nbsp;se&nbsp;deve&nbsp;essere&nbsp;cambiato&nbsp;il&nbsp;verso&nbsp;del&nbsp;gioco<br>
+&nbsp;&nbsp;&nbsp;&nbsp;numTurno&nbsp;(int):&nbsp;Numero&nbsp;del&nbsp;turno&nbsp;attuale<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;int:&nbsp;Il&nbsp;numero&nbsp;del&nbsp;turno&nbsp;aggiornato</tt></dd></dl>
+ <dl><dt><a name="-checkCartaSpeciale"><strong>checkCartaSpeciale</strong></a>(card)</dt><dd><tt>Verifica&nbsp;se&nbsp;la&nbsp;carta&nbsp;è&nbsp;una&nbsp;carta&nbsp;speciale&nbsp;di&nbsp;UNO.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;card&nbsp;(str):&nbsp;Carta<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bool:&nbsp;True&nbsp;se&nbsp;è&nbsp;una&nbsp;carta&nbsp;speciale,&nbsp;altrimenti&nbsp;False</tt></dd></dl>
+ <dl><dt><a name="-checkIsValid"><strong>checkIsValid</strong></a>(card_lasciata)</dt><dd><tt>Verifica&nbsp;se&nbsp;la&nbsp;carta&nbsp;giocata&nbsp;è&nbsp;valida&nbsp;secondo&nbsp;le&nbsp;regole&nbsp;del&nbsp;gioco&nbsp;UNO.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;card_lasciata&nbsp;(str):&nbsp;Carta&nbsp;giocata<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;tuple:&nbsp;Tupla&nbsp;contenente&nbsp;un&nbsp;booleano&nbsp;per&nbsp;la&nbsp;validità&nbsp;della&nbsp;carta&nbsp;e&nbsp;un&nbsp;booleano&nbsp;per&nbsp;indicare&nbsp;se&nbsp;è&nbsp;speciale</tt></dd></dl>
+ <dl><dt><a name="-crea_mazzo_uno"><strong>crea_mazzo_uno</strong></a>()</dt><dd><tt>Crea&nbsp;e&nbsp;mescola&nbsp;il&nbsp;mazzo&nbsp;di&nbsp;carte&nbsp;per&nbsp;il&nbsp;gioco&nbsp;UNO.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;list:&nbsp;Mazzo&nbsp;di&nbsp;carte&nbsp;per&nbsp;il&nbsp;gioco&nbsp;UNO</tt></dd></dl>
+ <dl><dt><a name="-create_seven"><strong>create_seven</strong></a>()</dt><dd><tt>Crea&nbsp;una&nbsp;serie&nbsp;di&nbsp;sette&nbsp;carte&nbsp;per&nbsp;iniziare&nbsp;il&nbsp;gioco.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;str:&nbsp;Carte&nbsp;create<br>
+&nbsp;&nbsp;&nbsp;&nbsp;list:&nbsp;Lista&nbsp;delle&nbsp;carte&nbsp;create</tt></dd></dl>
+ <dl><dt><a name="-gestisciSpeciale"><strong>gestisciSpeciale</strong></a>(card)</dt><dd><tt>Gestisce&nbsp;le&nbsp;azioni&nbsp;speciali&nbsp;associate&nbsp;alle&nbsp;carte&nbsp;UNO&nbsp;speciali.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;card&nbsp;(str):&nbsp;Carta&nbsp;speciale&nbsp;giocata<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;str:&nbsp;Messaggio&nbsp;relativo&nbsp;all'effetto&nbsp;speciale<br>
+&nbsp;&nbsp;&nbsp;&nbsp;list:&nbsp;Lista&nbsp;di&nbsp;carte&nbsp;pescate&nbsp;(se&nbsp;necessario)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;str:&nbsp;Stringa&nbsp;rappresentante&nbsp;le&nbsp;carte&nbsp;pescate&nbsp;(se&nbsp;necessario)</tt></dd></dl>
+ <dl><dt><a name="-getCardComplete"><strong>getCardComplete</strong></a>(cardRec)</dt><dd><tt>Restituisce&nbsp;il&nbsp;nome&nbsp;completo&nbsp;della&nbsp;carta&nbsp;giocata.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cardRec&nbsp;(str):&nbsp;Carta&nbsp;giocata<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;str:&nbsp;Nome&nbsp;completo&nbsp;della&nbsp;carta</tt></dd></dl>
+ <dl><dt><a name="-getGiocatoreCorrente"><strong>getGiocatoreCorrente</strong></a>()</dt><dd><tt>Restituisce&nbsp;il&nbsp;giocatore&nbsp;corrente&nbsp;in&nbsp;base&nbsp;al&nbsp;turno&nbsp;attuale.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;giocatore:&nbsp;Il&nbsp;giocatore&nbsp;corrente</tt></dd></dl>
+ <dl><dt><a name="-getGiocatoreSuccessivo"><strong>getGiocatoreSuccessivo</strong></a>()</dt><dd><tt>Restituisce&nbsp;il&nbsp;giocatore&nbsp;successivo&nbsp;in&nbsp;base&nbsp;al&nbsp;turno&nbsp;attuale.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;giocatore:&nbsp;Il&nbsp;giocatore&nbsp;successivo</tt></dd></dl>
+ <dl><dt><a name="-handle_client"><strong>handle_client</strong></a>(client_socket, shared_message, shutdown_event, giocatori)</dt><dd><tt>Funzione&nbsp;per&nbsp;gestire&nbsp;i&nbsp;singoli&nbsp;client&nbsp;connessi&nbsp;al&nbsp;server.<br>
+Riceve&nbsp;e&nbsp;interpreta&nbsp;i&nbsp;messaggi&nbsp;dai&nbsp;client,&nbsp;gestisce&nbsp;la&nbsp;logica&nbsp;di&nbsp;gioco&nbsp;e&nbsp;invia&nbsp;risposte&nbsp;ai&nbsp;client.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;client_socket&nbsp;(socket):&nbsp;Socket&nbsp;del&nbsp;client<br>
+&nbsp;&nbsp;&nbsp;&nbsp;shared_message&nbsp;(threading.Event):&nbsp;Evento&nbsp;condiviso&nbsp;per&nbsp;la&nbsp;comunicazione<br>
+&nbsp;&nbsp;&nbsp;&nbsp;shutdown_event&nbsp;(threading.Event):&nbsp;Evento&nbsp;per&nbsp;il&nbsp;termine&nbsp;del&nbsp;server<br>
+&nbsp;&nbsp;&nbsp;&nbsp;giocatori&nbsp;(list):&nbsp;Lista&nbsp;dei&nbsp;giocatori&nbsp;connessi&nbsp;al&nbsp;server</tt></dd></dl>
+ <dl><dt><a name="-lasciaCarta"><strong>lasciaCarta</strong></a>(carta, posGiocatore)</dt><dd><tt>Gestisce&nbsp;l'abbandono&nbsp;della&nbsp;carta&nbsp;giocata.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;carta&nbsp;(str):&nbsp;Carta&nbsp;giocata<br>
+&nbsp;&nbsp;&nbsp;&nbsp;posGiocatore&nbsp;(int):&nbsp;Posizione&nbsp;del&nbsp;giocatore&nbsp;che&nbsp;ha&nbsp;giocato&nbsp;la&nbsp;carta</tt></dd></dl>
+ <dl><dt><a name="-main"><strong>main</strong></a>()</dt><dd><tt>Funzione&nbsp;principale&nbsp;del&nbsp;server&nbsp;per&nbsp;gestire&nbsp;le&nbsp;connessioni&nbsp;dei&nbsp;giocatori&nbsp;e&nbsp;avviare&nbsp;il&nbsp;gioco&nbsp;UNO.</tt></dd></dl>
+ <dl><dt><a name="-pesca_carta"><strong>pesca_carta</strong></a>()</dt><dd><tt>Pesca&nbsp;una&nbsp;carta&nbsp;dal&nbsp;mazzo&nbsp;temporaneo.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;str:&nbsp;Carta&nbsp;pescata</tt></dd></dl>
+ <dl><dt><a name="-searchClient"><strong>searchClient</strong></a>(nickClient)</dt><dd><tt>Trova&nbsp;il&nbsp;giocatore&nbsp;corrispondente&nbsp;al&nbsp;nickname&nbsp;specificato.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;nickClient&nbsp;(str):&nbsp;Nickname&nbsp;del&nbsp;giocatore<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;tuple:&nbsp;Tupla&nbsp;contenente&nbsp;il&nbsp;giocatore&nbsp;corrispondente&nbsp;al&nbsp;nickname&nbsp;e&nbsp;la&nbsp;sua&nbsp;posizione</tt></dd></dl>
+ <dl><dt><a name="-spostaTurno"><strong>spostaTurno</strong></a>(numero, cambio_verso)</dt><dd><tt>Gestisce&nbsp;il&nbsp;passaggio&nbsp;del&nbsp;turno&nbsp;tra&nbsp;i&nbsp;giocatori.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;numero&nbsp;(int):&nbsp;Numero&nbsp;di&nbsp;turni&nbsp;da&nbsp;spostare<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cambio_verso&nbsp;(bool):&nbsp;Indica&nbsp;se&nbsp;deve&nbsp;essere&nbsp;cambiato&nbsp;il&nbsp;verso&nbsp;del&nbsp;gioco</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>accept_connections</strong> = True<br>
+<strong>cardCenter</strong> = ''<br>
+<strong>clients</strong> = 0<br>
+<strong>create</strong> = 0<br>
+<strong>game</strong> = False<br>
+<strong>giocatoreCorrente</strong> = None<br>
+<strong>giocatori</strong> = []<br>
+<strong>lastCard</strong> = False<br>
+<strong>mazzo_tavolo</strong> = []<br>
+<strong>mazzo_temp</strong> = []<br>
+<strong>mazzo_uno</strong> = []<br>
+<strong>messPrec</strong> = 'none;none'<br>
+<strong>numeroTurno</strong> = 1<br>
+<strong>player_to_draw</strong> = None<br>
+<strong>verso_turno</strong> = True</td></tr></table>
+</body></html>
