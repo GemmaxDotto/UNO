@@ -1,44 +1,44 @@
-# UNO PROJECT BY Provenzi & Dotto
+# PROGETTO UNO DI Provenzi & Dotto
 
 ## Server
 
-The server is implemented in Python. It manages the game logic and maintains the game state. It communicates with the clients through a socket-based protocol (TCP).
+Il server è implementato in Python. Gestisce la logica di gioco e mantiene lo stato del gioco. Comunica con i client tramite un protocollo basato su socket (TCP).
 
-### Setup and Usage
+### Installazione e Utilizzo
 
-1. Navigate to the server directory.
-2. Install the required Python dependencies.
-3. Run the server script using Python.
+1. Naviga nella directory del server.
+2. Installa le dipendenze richieste di Python.
+3. Esegui lo script del server utilizzando Python.
 
 ## Client
 
-The client is a graphical user interface (GUI) implemented in Java. It communicates with the server (TCP) to send player actions and receive game updates.
+Il client è un'interfaccia utente grafica (GUI) implementata in Java. Comunica con il server (TCP) per inviare azioni del giocatore e ricevere aggiornamenti di gioco.
 
-### Setup and Usage
+### Installazione e Utilizzo
 
-1. Navigate to the client directory.
-2. Install the required Java dependencies.
-3. Run the GUI using Java.
+1. Naviga nella directory del client.
+2. Installa le dipendenze richieste di Java.
+3. Esegui la GUI utilizzando Java.
 
-## TCP Protocol
+## Protocollo TCP
 
-The Transmission Control Protocol (TCP) is a communication protocol used in this project for sending data packets over the network. It is a reliable, ordered, and error-checked delivery of a stream of bytes between applications running on hosts communicating via an IP network.
+Il Transmission Control Protocol (TCP) è un protocollo di comunicazione utilizzato in questo progetto per inviare pacchetti di dati sulla rete. È una consegna affidabile, ordinata e controllata degli errori di un flusso di byte tra applicazioni in esecuzione su host che comunicano tramite una rete IP.
 
-In the context of the Uno project:
+Nel contesto del progetto Uno:
 
-- The server uses TCP to send game updates to the clients and receive player actions.
-- The client uses TCP to send player actions to the server and receive game updates.
+- Il server utilizza TCP per inviare aggiornamenti di gioco ai client e ricevere azioni dei giocatori.
+- Il client utilizza TCP per inviare azioni dei giocatori al server e ricevere aggiornamenti di gioco.
 
-TCP ensures that all game updates and player actions are delivered in the correct order and without errors, which is crucial for maintaining the game state and providing a smooth gameplay experience.
+TCP garantisce che tutti gli aggiornamenti di gioco e le azioni dei giocatori vengano consegnati nell'ordine corretto e senza errori, il che è fondamentale per mantenere lo stato del gioco e fornire un'esperienza di gioco fluida.
 
-## Game Logic
+## Logica di Gioco
 
-The game logic for the Uno project is implemented in the server. It follows the standard rules of Uno with some additional features:
+La logica di gioco per il progetto Uno è implementata nel server. Segue le regole standard di Uno con alcune caratteristiche aggiuntive:
 
-- The game starts with each player being dealt 7 cards.
-- Players take turns in a clockwise direction, playing a card that matches the color or number of the top card on the discard pile.
-- If a player cannot play a card, they must draw a card from the deck.
-- Special cards like Skip, Reverse, and Draw Two introduce additional gameplay mechanics.
-- The game ends when a player has no cards left.
+- Il gioco inizia con ogni giocatore che riceve 7 carte.
+- I giocatori si alternano in senso orario, giocando una carta che corrisponde al colore o al numero della carta superiore sul mazzo di scarti.
+- Se un giocatore non può giocare una carta, deve pescare una carta dal mazzo.
+- Le carte speciali come Salta, Inverti e Pesca Due introducono meccaniche di gioco aggiuntive.
+- Il gioco termina quando un giocatore non ha più carte.
 
-The server manages the game state, including the discard pile, and the current direction of play. It also enforces the game rules, such as matching the color or number of the top card on the discard pile and handling special cards.
+Il server gestisce lo stato del gioco, inclusi il mazzo di scarti e la direzione corrente del gioco. Si occupa anche di far rispettare le regole del gioco, come abbinare il colore o il numero della carta superiore sul mazzo di scarti e gestire le carte speciali.

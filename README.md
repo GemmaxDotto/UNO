@@ -1,28 +1,27 @@
 # Repository per il progetto Uno Project TPSIT di Provenzi-Dotto
-## Introduction
+## Introduzione
 
-The Uno project is a card game implementation developed as part of the TPSIT course by Provenzi and Dotto. It aims to recreate the popular Uno card game in a digital format.
-   ## Rules
+Il progetto Uno è un'implementazione del gioco di carte sviluppata come parte del corso TPSIT da Provenzi e Dotto. Si propone di ricreare il popolare gioco di carte Uno in formato digitale.
+## Regole
 
-- The game is played with a standard deck of 108 cards.
-- Players take turns playing cards that match the color or number of the top card on the discard pile.
-- Special cards, such as Skip, Reverse, and Draw Two, introduce additional gameplay mechanics.
+- Il gioco si svolge con un mazzo standard di 108 carte.
+- I giocatori si alternano nel giocare carte che corrispondono al colore o al numero della carta superiore sul mazzo degli scarti.
+- Le carte speciali, come Salta, Inverti e Pesca Due, introducono meccaniche di gioco aggiuntive.
 
-## Features
+## Funzionalità
 
-- Multiplayer support for up to four players.
-- Interactive user interface with card animations.
+- Supporto multiplayer per un massimo di quattro giocatori.
+- Interfaccia utente interattiva con animazioni delle carte.
 
-## Implementation
+## Implementazione
 
-The Uno project is implemented using the Python programming language for server and JAVA for graphical user interface (GUI) development. 
+Il progetto Uno è implementato utilizzando il linguaggio di programmazione Python per il server e JAVA per lo sviluppo dell'interfaccia utente grafica (GUI).
 
-## Setup and Usage
+## Installazione e Utilizzo
 
-To set up and run the Uno project, follow these steps:
+Per configurare ed eseguire il progetto Uno, seguire questi passaggi:
 
-1. Clone the repository to your local machine.
-2. Install the required dependencies for the Python server and the Java GUI.
-3. Run the server script using Python.
-4. Run the GUI using Java.
-
+1. Clonare il repository sulla propria macchina locale.
+2. Installare le dipendenze richieste per il server Python e la GUI Java.
+3. Eseguire lo script del server utilizzando Python.
+4. Eseguire la GUI utilizzando Java.
