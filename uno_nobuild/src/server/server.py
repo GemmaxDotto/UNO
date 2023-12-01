@@ -2,7 +2,6 @@ import socket
 import random
 import time
 import giocatore as player
-import MyTimerThread as myt
 import threading
 import messagesTCP as msg
 
@@ -44,6 +43,8 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
 
             received_message = data.decode()
             
+            
+            
             if received_message.strip().split(";")[1] == "start":
                 global clients
                 clients += 1
@@ -74,7 +75,7 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                     
                     
                     mazzo_tavolo.append(cardCenter) #aggiungo carta centrale al mazzo del tavolo
-                    mazzo_temp.remove(cardCenter) #rimuovo carta centrale da5l mazzo temporaneo
+                    mazzo_temp.remove(cardCenter) #rimuovo carta centrale da5l mazzo temporaneo5
                     global numeroTurno
                     numeroTurno = 1 #imposto numero turno a 1
 
@@ -112,26 +113,27 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                 
             elif game == True and received_message.strip().split(";")[1] == "passo":  # se il messaggio ricevuto è passa
                  # Verifica se un giocatore deve ancora pescare
+                global messPrec
                 if player_to_draw is None:
                 # Invia un messaggio di errore al giocatore attuale
                  error_message = "errore;{};deve_pescare_prima_di_passare".format(player_to_draw.get_nick())
                  msg.send_messages(received_message.strip().split(";")[0], error_message, giocatori)
-                 
+                 messPrec="none;none"
                 else:
                 # Consentire al giocatore attuale di passare il turno
                 # reimposta player_to_draw a None
                  player_to_draw = None
                  spostaTurno(1,cambio_verso= False)
                  getGiocatoreCorrente()
-                # Aggiungi il resto del tuo codice per il passaggio del turno qui
-                # ...
+                 messPrec="none;none"
+                
             
             elif game==True and received_message.strip().split(";")[1]=="pesca":
                 
                 
                 nickClient = received_message.strip().split(";")[0]
                 giocatoreClient,pos = searchClient(nickClient)
-                global messPrec
+                
                 if not messPrec.strip().split(";")[1]=="pesca" and not messPrec.strip().split(";")[0]==nickClient:
                  getGiocatoreCorrente()
                  if giocatoreCorrente == giocatoreClient:  #controllo se turno corretto
@@ -149,7 +151,6 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                   HandleN_CarteAvversari(nickClient)    
                 
             elif game==True and received_message.strip().split(";")[1]=="lascia":
-                #controllo se turno corretto
                 nickClient = received_message.strip().split(";")[0] 
                 giocatoreTemp,pos = searchClient(nickClient)
                 getGiocatoreCorrente() 
@@ -189,9 +190,9 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                             giocatoreSuccessivo = getGiocatoreSuccessivo()
                             for i in range(len(carte)):
                                 giocatoreSuccessivo.aggiungi_carta(carte[i])
-                            conferma_message ="carte_pescate" +  ";" + nickClient + ";" +carteStr+"\r\n" 
+                            conferma_message ="carte_pescate" +  ";" + giocatoreSuccessivo.get_nick() + ";" +carteStr+"\r\n" 
                             print(f"Invio: {conferma_message}")
-                            msg.send_messages(nickClient,conferma_message,giocatori)
+                            msg.send_messages(giocatoreSuccessivo.get_nick(),conferma_message,giocatori)
                             spostaTurno(1,cambio_verso= False)
                     elif correct: #se carta corretta non speciale
                     
@@ -231,7 +232,7 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                         print(f"Invio: {conferma_message}")
                         
 
-                        spostaTurno(1,cambio_verso= False)
+                        spostaTurno(1,cambio_verso= False) 
                 
                     else:
                         #carta non valida
@@ -243,13 +244,14 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                 global ColorC
                 ColorC=received_message.strip().split(";")[1]
                 print(ColorC)
-                spostaTurno(1,cambio_verso= False)
+                spostaTurno(1,cambio_verso= False) 
             else:
                 altro_message = "err"
                 client_socket.sendall(altro_message.encode())
                 print(f"Errore durante la gestione del client: {received_message}")
 
-            
+            print(f"Numero turno: {numeroTurno}")
+            print(f"Verso turno: {verso_turno}")
 
     except Exception as e:
         print(f"Errore durante la gestione del client: {e}")
@@ -313,7 +315,7 @@ def getGiocatoreSuccessivo():
     nTurnoTMP = addTurno(1, verso_turno, numeroTurno)
     if nTurnoTMP > clients:
      nTurnoTMP -= clients
-    player = giocatori[nTurnoTMP - 1]
+    player = giocatori[nTurnoTMP]
     return player
 
 def getGiocatoreCorrente():
@@ -365,7 +367,7 @@ def gestisciSpeciale(card):
     for i in range(pesca):
         c = pesca_carta()
         carte.append(c)
-        carteStr += "-" + c
+        carteStr +=  c+"-"
 
     return msg,carte,carteStr
 
@@ -379,22 +381,27 @@ def checkIsValid(card_lasciata):
     Returns:
         tuple: Tupla contenente un booleano per la validità della carta e un booleano per indicare se è speciale
     """
-    speciale = checkCartaSpeciale(card_lasciata)
+    speciale = checkCartaSpeciale(getCardComplete(card_lasciata))
     correct = False
 
     last_color = mazzo_tavolo[-1][1]
     last_number = mazzo_tavolo[-1][0]
 
-
+    global ColorC
+    
     if speciale and card_lasciata[0]=="T" or card_lasciata[0]=="S" or card_lasciata[0]=="R":
-        color_card_speciale = card_lasciata[0]
+        color_card_speciale = card_lasciata[1]
         if not color_card_speciale == last_color:
             correct = False
+        elif color_card_speciale == ColorC:
+            correct = True
+            ColorC=""
     elif speciale and card_lasciata[0]=="F" or card_lasciata[0]=="C":
         correct = speciale
     else:   
         number_card=card_lasciata[0]
         color_card=card_lasciata[1]
+        
         
         if number_card==last_number or color_card==last_color:
             correct = True 
@@ -408,7 +415,7 @@ def checkIsValid(card_lasciata):
 def lasciaCarta(carta,posGiocatore):
     """
     Gestisce l'abbandono della carta giocata.
-    Args:
+    Args:5
         carta (str): Carta giocata
         posGiocatore (int): Posizione del giocatore che ha giocato la carta
     """
@@ -424,7 +431,7 @@ def checkCartaSpeciale(card):
     Returns:
         bool: True se è una carta speciale, altrimenti False
     """
-    if card=="FD" or card=="CC" or card[0]=="R" or card[0]=="S" or card[0]=="T": #carte speciali DRAW FOUR (FD) , CHANGE COLOR (CC) , REVERSE (R*) , SKIP (S*) , DRAW TWO (TB)
+    if card=="Draw Four" or card=="Change Color" or card[0]=="R" or card[0]=="S" or card[0]=="D": #carte speciali DRAW FOUR (Draw Four) , CHANGE COLOR (Change Color) , REVERSE (R*) , SKIP (S*) , DRAW TWO (D(raw Two))
         return True
     return False
 
