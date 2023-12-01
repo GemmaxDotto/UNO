@@ -3,9 +3,19 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+/**
+ * La classe WaitingWindow rappresenta una finestra di attesa che si apre in
+ * attesa di un evento specifico.
+ * Estende JDialog per visualizzare un messaggio e un'immagine durante l'attesa.
+ */
 public class WaitingWindow extends JDialog {
-    Condivisa cond;
+    private Condivisa cond; // Oggetto condiviso che contiene informazioni sull'evento di attesa
 
+    /**
+     * Costruttore per la classe WaitingWindow.
+     * 
+     * @param cond Oggetto Condivisa contenente informazioni sull'evento di attesa.
+     */
     public WaitingWindow(Condivisa cond) {
         super((Frame) null, "Attendere...", true);
         this.cond = cond;
@@ -18,6 +28,7 @@ public class WaitingWindow extends JDialog {
         labelMessage.setFont(new Font("Helvetica", Font.PLAIN, 16));
         add(labelMessage, BorderLayout.CENTER);
 
+        // Aggiunta di un'immagine di attesa
         ImageIcon icon = new ImageIcon("uno_nobuild\\src\\client\\images\\waiting.gif");
         JLabel labelImage = new JLabel(icon);
         add(labelImage, BorderLayout.SOUTH);
@@ -27,17 +38,18 @@ public class WaitingWindow extends JDialog {
             @Override
             public void windowOpened(WindowEvent e) {
                 new Thread(() -> {
+                    // Attende finché Game.on non diventa true
                     while (!cond.Game.isOn()) {
                         try {
-
                             Thread.sleep(1000);
                         } catch (InterruptedException ex) {
                             ex.printStackTrace();
                         }
                     }
 
+                    // Chiudi la finestra di attesa quando Game.on diventa true
                     SwingUtilities.invokeLater(() -> {
-                        dispose(); // Chiudi la finestra di attesa quando Game.on diventa true
+                        dispose();
                     });
                 }).start();
             }

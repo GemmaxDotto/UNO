@@ -1,19 +1,20 @@
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
-import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 
 public class ClientGUI extends JFrame {
 
+    // Variabili per la gestione delle carte e delle componenti dell'interfaccia
+    // grafica
     private ArrayList<CardComponent> playerCards;
     JPanel mainPanel;
     JPanel centerCardPanel;
     JPanel cardsPanel;
     JPanel playerCardsPanel;
-    // JPanel opponentCardsPanel;
     Condivisa cond;
     JPanel topOpponentCardsPanel;
     JPanel rightOpponentCardsPanel;
@@ -21,15 +22,21 @@ public class ClientGUI extends JFrame {
     CardComponent opponentCard;
     JTextArea chatArea;
 
+    /**
+     * Costruttore che inizializza e imposta l'interfaccia grafica del gioco Uno.
+     * 
+     * @throws IOException In caso di eccezione durante la creazione
+     *                     dell'interfaccia grafica
+     */
     public ClientGUI() throws IOException {
         super("Uno Game Client");
         this.cond = new Condivisa(this);
         this.cond.startGameManaging();
 
+        // Impostazione dell'aspetto grafico
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-        } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException
-                | IllegalAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -37,11 +44,11 @@ public class ClientGUI extends JFrame {
         mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(Color.WHITE);
 
+        // Inizializzazione e impostazione dei pannelli per le carte e la chat
         setCards();
 
         // Creazione del pannello per la chat
         JPanel chatPanel = new JPanel(new BorderLayout());
-
         chatArea = new JTextArea();
         chatArea.setEditable(false);
         chatArea.setLineWrap(true);
@@ -86,10 +93,11 @@ public class ClientGUI extends JFrame {
         // pannello della chat
         chatPanel.add(chatButtonPanel, BorderLayout.EAST);
 
-        // Aggiungi il pannello della chat nella parte inferiore del pannello principale
+
+        // Aggiunta del pannello della chat al pannello principale
         mainPanel.add(chatPanel, BorderLayout.SOUTH);
 
-        // Aggiungi il pannello principale al frame
+        // Aggiunta del pannello principale al frame
         add(mainPanel);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -98,24 +106,30 @@ public class ClientGUI extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Imposta e organizza i pannelli per le carte all'interno dell'interfaccia
+     * grafica.
+     */
     public void setCards() {
-
+        // Inizializzazione della lista delle carte del giocatore
         playerCards = new ArrayList<>();
         cardsPanel = new JPanel(new BorderLayout());
-
         mainPanel.setBackground(new Color(255, 255, 153)); // Imposta lo sfondo giallo
 
+        // Creazione del pannello per la carta centrale e i bottoni 'Pesca' e 'Passo'
         centerCardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
+        // Aggiunta della carta centrale al pannello
         UnoCard centerCard = cond.tempCard;
         CardComponent centerCardComponent = new CardComponent(centerCard, cond);
         centerCardPanel.add(centerCardComponent);
 
-        // Aggiunta carta Pesca accanto alla carta centrale
+        // Aggiunta di una nuova carta accanto alla carta centrale
         UnoCard newCard = new UnoCard("B", "K", true);
         CardComponent newCardComponent = new CardComponent(newCard, cond);
         centerCardPanel.add(newCardComponent);
 
+        // Aggiunta dei bottoni 'Pesca' e 'Passo' al pannello
         JButton pescaButton = new JButton("Pesca");
         centerCardPanel.add(pescaButton);
         pescaButton.addActionListener(new ActionListener() {
@@ -134,56 +148,55 @@ public class ClientGUI extends JFrame {
             }
         });
 
+        // Configurazione dei pannelli degli avversari
         setupOpponentPanels();
 
         // Creazione del pannello per le carte del giocatore
         playerCardsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-        // Aggiungi le carte del giocatore principale nel pannello delle carte del
-        // giocatore
+        // Aggiunta delle carte del giocatore al pannello
         for (UnoCard unoCard : cond.Game.myCards) {
             CardComponent playerCard = new CardComponent(unoCard, cond);
             playerCard.setPreferredSize(new Dimension(50, 80));
-            playerCards.add(playerCard); // Aggiungi le carte del giocatore principale
+            playerCards.add(playerCard); // Aggiunta delle carte del giocatore
             playerCardsPanel.add(playerCard);
-
         }
 
-        // Creazione del pannello per le carte del centro (playerCards - carta centrale
-        // - opponentCards)
-
+        // Creazione del pannello per le carte del centro
         cardsPanel.add(centerCardPanel, BorderLayout.CENTER);
         cardsPanel.add(playerCardsPanel, BorderLayout.SOUTH);
 
-        // Aggiungi i pannelli al mainPanel
+        // Aggiunta dei pannelli al mainPanel
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(cardsPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * Configura i pannelli per visualizzare le carte degli avversari.
+     */
     private void setupOpponentPanels() {
-        // Creazione del pannello per le carte degli avversari sopra il centro
+        // Creazione dei pannelli per le carte degli avversari sopra, a destra e a
+        // sinistra del centro
         topOpponentCardsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-
-        // Creazione del pannello per le carte degli avversari a destra del centro
         rightOpponentCardsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-
-        // Creazione del pannello per le carte degli avversari a sinistra del centro
         leftOpponentCardsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-        // Crea nuove istanze di CardComponent per ogni pannello
+        // Creazione di un'istanza di CardComponent per la carta avversario
         opponentCard = new CardComponent(new UnoCard("B", "K", true), cond);
-
         opponentCard.setPreferredSize(new Dimension(50, 80));
 
+        // Aggiunta delle carte avversarie ai rispettivi pannelli
         for (int i = 0; i < 7; i++) {
-            // Crea nuove istanze di CardComponent per ogni pannello
             CardComponent opponentCardTop = new CardComponent(new UnoCard("B", "K", true), cond);
             CardComponent opponentCardRight = new CardComponent(new UnoCard("B", "K", true), cond);
             CardComponent opponentCardLeft = new CardComponent(new UnoCard("B", "K", true), cond);
+
             opponentCardTop.setPreferredSize(new Dimension(50, 80));
             opponentCardRight.setPreferredSize(new Dimension(50, 80));
             opponentCardLeft.setPreferredSize(new Dimension(50, 80));
 
+            // Aggiunta delle carte avversarie nei rispettivi pannelli basato sul numero di
+            // avversari
             if (cond.Game.numeroAvv == 1) {
                 topOpponentCardsPanel.add(opponentCardTop);
                 cardsPanel.add(topOpponentCardsPanel, BorderLayout.NORTH);
@@ -200,28 +213,38 @@ public class ClientGUI extends JFrame {
                 cardsPanel.add(opponentCardLeft, BorderLayout.WEST);
                 cardsPanel.add(topOpponentCardsPanel, BorderLayout.NORTH);
             }
-
         }
-
     }
 
+    /**
+     * Aggiorna le carte del giocatore nell'interfaccia grafica.
+     */
     public void updatePlayerCards() {
+        playerCardsPanel.removeAll(); // Rimuove tutti i componenti attuali dalle carte del giocatore
 
-        playerCardsPanel.removeAll(); // Rimuozione tutti i componenti attuali
+        // Aggiunge le carte del giocatore principale nel pannello delle carte del
+        // giocatore
         for (UnoCard card : cond.Game.myCards) {
             CardComponent playerCard = new CardComponent(card, cond);
+            playerCard.setPreferredSize(new Dimension(50, 80));
             playerCardsPanel.add(playerCard);
         }
-        playerCardsPanel.revalidate();
-        playerCardsPanel.repaint();
+
+        playerCardsPanel.revalidate(); // Rende valido il layout del pannello
+        playerCardsPanel.repaint(); // Aggiorna l'interfaccia grafica del pannello
     }
 
+    /**
+     * Aggiorna le carte degli avversari nell'interfaccia grafica.
+     */
     public void updateOpponentCards() {
-        // Rimuovi tutti i componenti dai pannelli prima di aggiungerne di nuovi
+        // Rimuove tutti i componenti dai pannelli delle carte avversarie
         topOpponentCardsPanel.removeAll();
         rightOpponentCardsPanel.removeAll();
         leftOpponentCardsPanel.removeAll();
-    
+
+        // Aggiunge le carte avversarie nei rispettivi pannelli basato sul numero di
+        // avversari
         if (cond.Game.numeroAvv == 1) {
             for (int i = 0; i < cond.Game.avvCards.get(0); i++) {
                 CardComponent opponentCardTop = new CardComponent(new UnoCard("B", "K", true), cond);
@@ -232,7 +255,7 @@ public class ClientGUI extends JFrame {
             topOpponentCardsPanel.revalidate();
             topOpponentCardsPanel.repaint();
         }
-    
+
         if (cond.Game.numeroAvv == 2) {
             for (int i = 0; i < cond.Game.avvCards.get(1); i++) {
                 CardComponent opponentCardRight = new CardComponent(new UnoCard("B", "K", true), cond);
@@ -243,7 +266,7 @@ public class ClientGUI extends JFrame {
             rightOpponentCardsPanel.revalidate();
             rightOpponentCardsPanel.repaint();
         }
-    
+
         if (cond.Game.numeroAvv == 3) {
             for (int i = 0; i < cond.Game.avvCards.get(2); i++) {
                 CardComponent opponentCardLeft = new CardComponent(new UnoCard("B", "K", true), cond);
@@ -255,17 +278,20 @@ public class ClientGUI extends JFrame {
             leftOpponentCardsPanel.repaint();
         }
     }
-    
 
+    /**
+     * Aggiorna la carta centrale nell'interfaccia grafica, incluso il pulsante
+     * "Pesca" e il pulsante "Passo".
+     */
     public void updateCentralCard() {
-        centerCardPanel.removeAll(); // Rimuozione tutti i componenti attuali
+        centerCardPanel.removeAll(); // Rimuove tutti i componenti attualmente presenti nel pannello centrale
 
-        UnoCard centerCard = cond.tempCard; // carta al centro
+        UnoCard centerCard = cond.tempCard; // Ottiene la carta centrale dallo stato del gioco
         CardComponent centerCardComponent = new CardComponent(centerCard, cond);
 
-        centerCardPanel.add(centerCardComponent);
+        centerCardPanel.add(centerCardComponent); // Aggiunge la nuova carta centrale al pannello
 
-        // Aggiunta carta Pesca accanto alla carta centrale
+        // Aggiunta della carta "Pesca" accanto alla carta centrale
         UnoCard newCard = new UnoCard("B", "K", true);
         CardComponent newCardComponent = new CardComponent(newCard, cond);
         centerCardPanel.add(newCardComponent);
@@ -275,41 +301,58 @@ public class ClientGUI extends JFrame {
         pescaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                cond.Game.handlePesca();
+                cond.Game.handlePesca(); // Gestisce l'azione di pesca nel gioco
                 System.out.println("pesca");
-
             }
         });
 
-         JButton passoButton = new JButton("Passo");
+        JButton passoButton = new JButton("Passo");
         centerCardPanel.add(passoButton);
         passoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cond.Game.handlePasso();
+                cond.Game.handlePasso(); // Gestisce l'azione di passo nel gioco
             }
         });
 
-        centerCardPanel.revalidate();
-        centerCardPanel.repaint();
+        centerCardPanel.revalidate(); // Rende valido il layout del pannello centrale
+        centerCardPanel.repaint(); // Aggiorna l'interfaccia grafica del pannello centrale
     }
 
+    /**
+     * Aggiorna l'interfaccia grafica per indicare il turno attuale di un giocatore.
+     * 
+     * @param nomeGiocatore Il nome del giocatore che ha il turno.
+     */
     public void aggiornaTurno(String nomeGiocatore) {
-        chatArea.append("Turno di " + nomeGiocatore + "\n");
+        chatArea.append("Turno di " + nomeGiocatore + "\n"); // Aggiunge un messaggio al campo di chat per indicare il
+                                                             // turno del giocatore
     }
 
+    /**
+     * Gestisce l'interfaccia grafica quando è richiesta la selezione del colore da
+     * parte del giocatore.
+     * Mostra una finestra di dialogo per consentire al giocatore di selezionare un
+     * colore e invia la selezione al server.
+     * Visualizza un messaggio di conferma se un colore è stato selezionato con
+     * successo.
+     */
     public void handleCambioColore() {
+        ChooseColorDialog dialog = new ChooseColorDialog(this); // Crea una finestra di dialogo per la scelta del colore
+        dialog.setVisible(true); // Mostra la finestra di dialogo
 
-        ChooseColorDialog dialog = new ChooseColorDialog(this);
-        dialog.setVisible(true);
-        String selectedColor = dialog.getSelectedColor();
+        String selectedColor = dialog.getSelectedColor(); // Ottiene il colore selezionato dall'utente dalla finestra di
+                                                          // dialogo
+
         if (selectedColor != null) {
-            // Invia il colore al server o esegui altre azioni necessarie
-            // Puoi anche aggiornare l'interfaccia grafica in base alla scelta del colore
+            // Invia il colore al server o esegue altre azioni necessarie
+            // Può aggiornare l'interfaccia grafica in base alla scelta del colore
             JOptionPane.showMessageDialog(this, "Hai scelto il colore: " + selectedColor);
+
+            // Invia il colore selezionato al server attraverso il client
             cond.Game.client.sendMessage("colore;" + selectedColor.charAt(0));
         } else {
+            // Se l'utente non ha selezionato alcun colore, mostra un messaggio di avviso
             JOptionPane.showMessageDialog(this, "Nessun colore selezionato");
         }
     }
