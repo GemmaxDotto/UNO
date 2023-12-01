@@ -44,19 +44,22 @@ public class threadMsg extends Thread {
                             System.out.println("messaggio speciale ricevuto");
                             switch (receivedMessage.strip().split(";")[2]) {
                                 case "salta_turno":
-                                    System.out.println(
-                                            "giocatore" + receivedMessage.strip().split(";")[1] + " salta un turno");
+                                            cond.Game.GUI.chatArea.append("giocatore" + receivedMessage.strip().split(";")[1] + " salta un turno\n");
                                     break;
                                 case "pesca_due":
-                                    System.out.println(
-                                            "giocatore" + receivedMessage.strip().split(";")[1] + " pesca due carte");
-
+                                            cond.Game.GUI.chatArea.append("giocatore" + receivedMessage.strip().split(";")[1] + " pesca due carte\n");
                                     break;
                                 case "pesca_quattro":
-                                    System.out.println("giocatore" + receivedMessage.strip().split(";")[1]
-                                            + " pesca quattro carte");
+                                            cond.Game.GUI.chatArea.append("giocatore" + receivedMessage.strip().split(";")[1] + " pesca quattro carte\n");
+                                            if(cond.Game.nickNameString.equals(receivedMessage.strip().split(";")[1])){
+                                                cond.Game.GUI.handleCambioColore();
+                                            }
                                     break;
-
+                                case "cambia_colore":
+                                            cond.Game.GUI.chatArea.append("giocatore" + receivedMessage.strip().split(";")[1] + " cambia il colore\n");
+                                            if(cond.Game.nickNameString.equals(receivedMessage.strip().split(";")[1])){
+                                                cond.Game.GUI.handleCambioColore();
+                                            }
                             }
                         }
 
