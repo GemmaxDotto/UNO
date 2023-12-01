@@ -207,10 +207,20 @@ public class GameManaging {
     }
 
     public void gestisciGUIAvv(String numCarte) {
+        avvCards.clear();
         for (int i = 0; i < numeroAvv; i++) {
             avvCards.add(Integer.parseInt(numCarte));
         }
         GUI.updateOpponentCards();
+    }
+
+    public void handlePasso() {
+        client.sendMessage(nickNameString + ";" + "passo");
+    }
+
+    public void aggiornaTurnoGUI(String nomeGiocatore) {
+        GUI.aggiornaTurno(nomeGiocatore);
+
     }
 
 }
