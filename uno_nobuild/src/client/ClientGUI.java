@@ -280,12 +280,36 @@ public class ClientGUI extends JFrame {
             }
         });
 
+         JButton passoButton = new JButton("Passo");
+        centerCardPanel.add(passoButton);
+        passoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cond.Game.handlePasso();
+            }
+        });
+
         centerCardPanel.revalidate();
         centerCardPanel.repaint();
     }
 
     public void aggiornaTurno(String nomeGiocatore) {
         chatArea.append("Turno di " + nomeGiocatore + "\n");
+    }
+
+    public void handleCambioColore() {
+
+        ChooseColorDialog dialog = new ChooseColorDialog(this);
+        dialog.setVisible(true);
+        String selectedColor = dialog.getSelectedColor();
+        if (selectedColor != null) {
+            // Invia il colore al server o esegui altre azioni necessarie
+            // Puoi anche aggiornare l'interfaccia grafica in base alla scelta del colore
+            JOptionPane.showMessageDialog(this, "Hai scelto il colore: " + selectedColor);
+            cond.Game.client.sendMessage("colore;" + selectedColor.charAt(0));
+        } else {
+            JOptionPane.showMessageDialog(this, "Nessun colore selezionato");
+        }
     }
 
 }
