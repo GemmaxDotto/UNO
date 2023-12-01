@@ -1,2 +1,3 @@
 -evitare le carte speciali come +4,+2 ... come carta sul tavolo
 -salta turno da stampare a schermo se è il giocaotore in questione ad essere bloccato
+-gestire carte speciali lato client
