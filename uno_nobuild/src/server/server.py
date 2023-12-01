@@ -110,7 +110,7 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                 for numero in range(clients):
                     msg.send_messages(giocatori[numero].get_nick(),conferma_message,giocatori)
                 
-            elif game == True and received_message.strip().split(";")[1] == "passa":  # se il messaggio ricevuto è passa
+            elif game == True and received_message.strip().split(";")[1] == "passo":  # se il messaggio ricevuto è passa
                  # Verifica se un giocatore deve ancora pescare
                 if player_to_draw is None:
                 # Invia un messaggio di errore al giocatore attuale
