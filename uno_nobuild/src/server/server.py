@@ -17,9 +17,12 @@ mazzo_tavolo=[]
 numeroTurno=1
 verso_turno=True
 accept_connections=True
+player_to_draw = None
 lastCard=False
+giocatoreCorrente=None
+messPrec="none;none"
 
-#barrier = threading.Barrier(2)
+
 
 def handle_client(client_socket, shared_message, shutdown_event, giocatori):
     try:
@@ -29,9 +32,6 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                 break
 
             received_message = data.decode()
-            
-            # parts = received_message.strip().split(';')
-            # print("Parti del messaggio:", parts)
             
             if received_message.strip().split(";")[1] == "start":
                 global clients
@@ -94,34 +94,61 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
             elif game==True and received_message.strip().split(";")[1]=="first":
                 conferma_message = "CentralCard;"+cardCenter +";"+str(clients-1)+ "\r\n"   #invio carta centrale+ numero di avversari
                 print(f"Invio: {conferma_message}")
-                
+                global giocatoreCorrente
+                giocatoreCorrente = giocatori[0]  # Inizia con il primo giocatore
                 for numero in range(clients):
                     msg.send_messages(giocatori[numero].get_nick(),conferma_message,giocatori)
                 
-                
+            elif game == True and received_message.strip().split(";")[1] == "passa":  # se il messaggio ricevuto è passa
+                 # Verifica se un giocatore deve ancora pescare
+                if player_to_draw is None:
+                # Invia un messaggio di errore al giocatore attuale
+                 error_message = "errore;{};deve_pescare_prima_di_passare".format(player_to_draw.get_nick())
+                 msg.send_messages(received_message.strip().split(";")[0], error_message, giocatori)
+                 
+                else:
+                # Consentire al giocatore attuale di passare il turno
+                # reimposta player_to_draw a None
+                 player_to_draw = None
+                 spostaTurno(1,cambio_verso= False)
+                # Aggiungi il resto del tuo codice per il passaggio del turno qui
+                # ...
+            
             elif game==True and received_message.strip().split(";")[1]=="pesca":
-                #controllo se turno corretto
+                
+                
                 nickClient = received_message.strip().split(";")[0]
                 giocatoreClient,pos = searchClient(nickClient)
-                card_pescata = pesca_carta()
+                global messPrec
+                if not messPrec.strip().split(";")[1]=="pesca" and not messPrec.strip().split(";")[0]==nickClient:
+                 getGiocatoreCorrente()
+                 if giocatoreCorrente == giocatoreClient:  #controllo se turno corretto
+                  player_to_draw = giocatoreClient
+                  card_pescata = pesca_carta()
 
-                giocatoreClient.aggiungi_carta(card_pescata)               
-                #manda solo carta pescata 
-                conferma_message="pesca;"+nickClient+";"+card_pescata+"\r\n"
-                print(f"Invio: {conferma_message}")
-                msg.send_messages(nickClient,conferma_message,giocatori)
-                #il pesca non presuppone cambio turno bottone passa turno?
-                #spostaTurno(1,cambio_verso= False)
+                  giocatoreClient.aggiungi_carta(card_pescata)               
+                  #manda solo carta pescata 
+                  conferma_message="pesca;"+nickClient+";"+card_pescata+"\r\n"
+                  print(f"Invio: {conferma_message}")
+                  msg.send_messages(nickClient,conferma_message,giocatori)
+                  #il pesca non presuppone cambio turno bottone passa turno?
+                  #spostaTurno(1,cambio_verso= False)
+                  messPrec=received_message.strip()
+                  HandleN_CarteAvversari(nickClient)    
                 
             elif game==True and received_message.strip().split(";")[1]=="lascia":
                 #controllo se turno corretto
-
-                card_lasciata = received_message.strip().split(";")[2]
-
-                correct,speciale = checkIsValid(card_lasciata)
-                
                 nickClient = received_message.strip().split(";")[0]
-                if speciale and correct:
+                giocatoreTemp,pos = searchClient(nickClient)
+                getGiocatoreCorrente()
+                if giocatoreCorrente == giocatoreTemp:  
+
+                    card_lasciata = received_message.strip().split(";")[2]
+
+                    correct,speciale = checkIsValid(card_lasciata)
+                
+                
+                    if speciale and correct:
                         msgSpeciale,carte,carteStr = gestisciSpeciale(card_lasciata) 
                         giocatoreTemp,pos = searchClient(nickClient)
                         lasciaCarta(card_lasciata,pos)
@@ -145,56 +172,56 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                             conferma_message ="carte_pescate" +  ";" + nickClient + ";" +carteStr+"\r\n"
                             msg.send_messages(nickClient,conferma_message,giocatori)
                             spostaTurno(1,cambio_verso= False)
-                elif correct:
+                    elif correct:
                     
-                    giocatoreClient,pos = searchClient(nickClient) 
-                    print(giocatoreClient.getMazzoToString())
-                    lasciaCarta(card_lasciata,pos)
+                        giocatoreClient,pos = searchClient(nickClient) 
+                        print(giocatoreClient.getMazzoToString())
+                        lasciaCarta(card_lasciata,pos)
                     
-                    if (lastCard and giocatoreClient.get_numero_carte()):
-                        conferma_message="vittoria;"+nickClient
-                        msg.send_messages(nickClient,conferma_message,giocatori)
-                    elif lastCard:
+                        if (lastCard and giocatoreClient.get_numero_carte()):
+                            conferma_message="vittoria;"+nickClient
+                            msg.send_messages(nickClient,conferma_message,giocatori)
+                        elif lastCard:
                             lastCard=False
 
                         
 
 
-                    print(received_message.strip())
+                        print(received_message.strip())
                     
 
-                    if(giocatoreClient.get_numero_carte()==1 and received_message.strip().split(";")[3]!="uno"):
-                        cardPescate = ""
-                        for i in range(0,3):
-                            card_pescata_tmp = pesca_carta()
-                            cardPescate+="-"+card_pescata_tmp
-                            giocatoreClient.aggiungi_carta(card_pescata_tmp)
-                        msg.send_messages(nickClient,"errore;"+nickClient+";uno_non_detto;"+cardPescate,giocatori)
-                    elif giocatoreClient.get_numero_carte()==1 and received_message.strip().split(";")[3]=="uno":
-                        lastCard=True
+                        if(giocatoreClient.get_numero_carte()==1 and received_message.strip().split(";")[3]!="uno"):
+                            cardPescate = ""
+                            for i in range(0,3):
+                                card_pescata_tmp = pesca_carta()
+                                cardPescate+="-"+card_pescata_tmp
+                                giocatoreClient.aggiungi_carta(card_pescata_tmp)
+                            msg.send_messages(nickClient,"errore;"+nickClient+";uno_non_detto;"+cardPescate,giocatori)
+                        elif giocatoreClient.get_numero_carte()==1 and received_message.strip().split(";")[3]=="uno":
+                            lastCard=True
 
 
                         
-                    #invia solo ok non mazzo
+                        #invia solo ok non mazzo
 
 
-                    conferma_message = "ok"+"\r\n"
+                        conferma_message = "ok"+"\r\n"
 
-                    msg.send_messages(nickClient,conferma_message,giocatori)
+                        msg.send_messages(nickClient,conferma_message,giocatori)
                     
-                    for numero in range(clients):
-                     conferma_message = "CentralChangeCard;"+giocatori[numero].get_nick()+";"+card_lasciata+"\r\n"
-                     msg.send_messages(giocatori[numero].get_nick(),conferma_message,giocatori)
-                    print(f"Invio: {conferma_message}")
+                        for numero in range(clients):
+                            conferma_message = "CentralChangeCard;"+giocatori[numero].get_nick()+";"+card_lasciata+"\r\n"
+                            msg.send_messages(giocatori[numero].get_nick(),conferma_message,giocatori)
+                        print(f"Invio: {conferma_message}")
                         
 
-                    spostaTurno(1,cambio_verso= False)
+                        spostaTurno(1,cambio_verso= False)
                 
-                else:
-                    #carta non valida
-                    message = "errore;"+nickClient+";carta_non_valida"
-                    print("non valida")        
-                HandleN_CarteAvversari(nickClient)    
+                    else:
+                        #carta non valida
+                        message = "errore;"+nickClient+";carta_non_valida"
+                        print("non valida")        
+                    HandleN_CarteAvversari(nickClient)    
             else:
                 altro_message = "err"
                 client_socket.sendall(altro_message.encode())
@@ -243,7 +270,14 @@ def getGiocatoreSuccessivo():
      nTurnoTMP -= clients
     player = giocatori[nTurnoTMP - 1]
     return player
-    
+
+def getGiocatoreCorrente():
+    global giocatoreCorrente
+    giocatoreCorrente = giocatori[numeroTurno - 1]
+    for numero in range(clients):
+        MessagexGUI="Turno;"+giocatoreCorrente.get_nick()+"\r\n"
+        msg.send_messages(giocatori[numero].get_nick(),MessagexGUI,giocatori)
+        print(f"Invio: {MessagexGUI}")
 
 def gestisciSpeciale(card):
     pesca=0
