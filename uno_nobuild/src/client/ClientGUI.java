@@ -276,6 +276,7 @@ public class ClientGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 cond.Game.handlePesca();
+                System.out.println("pesca");
 
             }
         });
