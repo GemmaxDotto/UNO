@@ -6,25 +6,34 @@ import MyTimerThread as myt
 import threading
 import messagesTCP as msg
 
-clients=0
-create=0
-mazzo_uno=[]
-mazzo_temp=[]
-game=False
-cardCenter=""
-giocatori=[]
-mazzo_tavolo=[]
-numeroTurno=1
-verso_turno=True
-accept_connections=True
+# Variabili globali
+clients = 0
+create = 0
+mazzo_uno = []
+mazzo_temp = []
+game = False
+cardCenter = ""
+giocatori = []
+mazzo_tavolo = []
+numeroTurno = 1
+verso_turno = True
+accept_connections = True
 player_to_draw = None
-lastCard=False
-giocatoreCorrente=None
-messPrec="none;none"
-
-
+lastCard = False
+giocatoreCorrente = None
+messPrec = "none;none"
 
 def handle_client(client_socket, shared_message, shutdown_event, giocatori):
+    """
+    Funzione per gestire i singoli client connessi al server.
+    Riceve e interpreta i messaggi dai client, gestisce la logica di gioco e invia risposte ai client.
+
+    Args:
+        client_socket (socket): Socket del client
+        shared_message (threading.Event): Evento condiviso per la comunicazione
+        shutdown_event (threading.Event): Evento per il termine del server
+        giocatori (list): Lista dei giocatori connessi al server
+    """
     try:
         while not shutdown_event.is_set():
             data = client_socket.recv(1024)
@@ -235,154 +244,249 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
     finally:
         client_socket.close()
 def HandleN_CarteAvversari(nickClient):
-    for numero in range(clients):
-            MessagexGUI="CarteAvversari;AVV_"+nickClient+";"+str(giocatori[numero].get_numero_carte())+"\r\n"
-            msg.send_messages(giocatori[numero].get_nick(),MessagexGUI,giocatori)
-            print(f"Invio: {MessagexGUI}")
-                     
-def spostaTurno(numero,cambio_verso):
-    global verso_turno,numeroTurno
-    if cambio_verso:
-        verso_turno=not verso_turno
-    
-    numeroTurno = addTurno(numero,verso_turno,numeroTurno)
+    """
+    Invia il numero di carte degli avversari a tutti i giocatori.
 
-def addTurno(num,verso,numTurno):
+    Args:
+        nickClient (str): Il nickname del giocatore corrente
+    """
+    for numero in range(clients):
+        MessagexGUI = "CarteAvversari;AVV_" + nickClient + ";" + str(giocatori[numero].get_numero_carte()) + "\r\n"
+        msg.send_messages(giocatori[numero].get_nick(), MessagexGUI, giocatori)
+        print(f"Invio: {MessagexGUI}")
+
+def spostaTurno(numero, cambio_verso):
+    """
+    Gestisce il passaggio del turno tra i giocatori.
+
+    Args:
+        numero (int): Numero di turni da spostare
+        cambio_verso (bool): Indica se deve essere cambiato il verso del gioco
+    """
+    global verso_turno, numeroTurno
+    if cambio_verso:
+        verso_turno = not verso_turno
+    
+    numeroTurno = addTurno(numero, verso_turno, numeroTurno)
+
+def addTurno(num, verso, numTurno):
+    """
+    Aggiunge il numero di turni al turno attuale.
+
+    Args:
+        num (int): Numero di turni da aggiungere
+        verso (bool): Indica se deve essere cambiato il verso del gioco
+        numTurno (int): Numero del turno attuale
+
+    Returns:
+        int: Il numero del turno aggiornato
+    """
     global clients
 
     if verso:
-        numTurno+=num
-        if numTurno>clients: #giro avanza oltre al max client e deve tornare al primo
-            numTurno-=clients
+        numTurno += num
+        if numTurno > clients:  # Se il turno supera il numero massimo di giocatori, torna al primo giocatore
+            numTurno -= clients
     else:
-        numTurno-=num
-        if numTurno<1: #giro avanza oltre al min client e deve tornare all'ultimo
-            numTurno+=clients
+        numTurno -= num
+        if numTurno < 1:  # Se il turno va sotto il primo giocatore, torna all'ultimo giocatore
+            numTurno += clients
     return numTurno
 
 
-
 def getGiocatoreSuccessivo():
-    #basato sul futuro giocatore del prossimo turno
-    global numeroTurno,verso_turno
+    """
+    Restituisce il giocatore successivo in base al turno attuale.
+
+    Returns:
+        giocatore: Il giocatore successivo
+    """
+    global numeroTurno, verso_turno
     nTurnoTMP = addTurno(1, verso_turno, numeroTurno)
     if nTurnoTMP > clients:
-     nTurnoTMP -= clients
+        nTurnoTMP -= clients
     player = giocatori[nTurnoTMP - 1]
     return player
 
 def getGiocatoreCorrente():
+    """
+    Restituisce il giocatore corrente in base al turno attuale.
+
+    Returns:
+        giocatore: Il giocatore corrente
+    """
     global giocatoreCorrente
     giocatoreCorrente = giocatori[numeroTurno - 1]
     for numero in range(clients):
-        MessagexGUI="Turno;"+giocatoreCorrente.get_nick()+"\r\n"
-        msg.send_messages(giocatori[numero].get_nick(),MessagexGUI,giocatori)
+        MessagexGUI = "Turno;" + giocatoreCorrente.get_nick() + "\r\n"
+        msg.send_messages(giocatori[numero].get_nick(), MessagexGUI, giocatori)
         print(f"Invio: {MessagexGUI}")
 
+    return giocatoreCorrente
+
 def gestisciSpeciale(card):
-    pesca=0
-    carte=[]
-    msg=""
-    carteStr=""
-    
-    if card[0]=="R":
-            spostaTurno(1,cambio_verso= True)
-    elif card[0]=="S":
-            nickGiocatoreSuccessivo=getGiocatoreSuccessivo().get_nick()
-            spostaTurno(2,cambio_verso= False)
-            msg = "speciale;"+nickGiocatoreSuccessivo+";salta_turno"
-    elif card[0]=="T":
-            nickGiocatoreSuccessivo=getGiocatoreSuccessivo().get_nick()
-            msg = "speciale;"+nickGiocatoreSuccessivo+";pesca_due"
-            pesca=2
+    """
+    Gestisce le azioni speciali associate alle carte UNO speciali.
 
+    Args:
+        card (str): Carta speciale giocata
 
-    elif card=="FD":
-        nickGiocatoreSuccessivo=getGiocatoreSuccessivo().get_nick()
-        msg = "speciale;"+nickGiocatoreSuccessivo+";pesca_quattro"
-        pesca=4
+    Returns:
+        str: Messaggio relativo all'effetto speciale
+        list: Lista di carte pescate (se necessario)
+        str: Stringa rappresentante le carte pescate (se necessario)
+    """
+    pesca = 0
+    carte = []
+    msg = ""
+    carteStr = ""
     
-    elif card=="CC":
-        spostaTurno(-1,cambio_verso= False)
+    if card[0] == "R":
+        spostaTurno(1, cambio_verso=True)
+    elif card[0] == "S":
+        nickGiocatoreSuccessivo = getGiocatoreSuccessivo().get_nick()
+        spostaTurno(2, cambio_verso=False)
+        msg = "speciale;" + nickGiocatoreSuccessivo + ";salta_turno"
+    elif card[0] == "T":
+        nickGiocatoreSuccessivo = getGiocatoreSuccessivo().get_nick()
+        msg = "speciale;" + nickGiocatoreSuccessivo + ";pesca_due"
+        pesca = 2
+    elif card == "FD":
+        nickGiocatoreSuccessivo = getGiocatoreSuccessivo().get_nick()
+        msg = "speciale;" + nickGiocatoreSuccessivo + ";pesca_quattro"
+        pesca = 4
+    elif card == "CC":
+        spostaTurno(-1, cambio_verso=False)
 
     for i in range(pesca):
         c = pesca_carta()
         carte.append(c)
-        carteStr+="-"+c
+        carteStr += "-" + c
 
-    return msg,carte,carteStr
-5
+    return msg, carte, carteStr
+
 
         
  
 def checkIsValid(card_lasciata):
+    """
+    Verifica se la carta giocata è valida secondo le regole del gioco UNO.
+
+    Args:
+        card_lasciata (str): Carta giocata
+
+    Returns:
+        tuple: Tupla contenente un booleano per la validità della carta e un booleano per indicare se è speciale
+    """
     speciale = checkCartaSpeciale(card_lasciata)
     correct = False
 
     last_color = mazzo_tavolo[-1][1]
     last_number = mazzo_tavolo[-1][0]
 
-
-    if speciale and card_lasciata[0]=="T" or card_lasciata[0]=="S" or card_lasciata[0]=="R":
+    if speciale and (card_lasciata[0] == "T" or card_lasciata[0] == "S" or card_lasciata[0] == "R"):
         color_card_speciale = card_lasciata[0]
         if not color_card_speciale == last_color:
             correct = False
-    elif speciale and card_lasciata[0]=="F" or card_lasciata[0]=="C":
+    elif speciale and (card_lasciata[0] == "F" or card_lasciata[0] == "C"):
         correct = speciale
-    else:   
-        number_card=card_lasciata[0]
-        color_card=card_lasciata[1]
+    else:
+        number_card = card_lasciata[0]
+        color_card = card_lasciata[1]
         
-        if number_card==last_number or color_card==last_color:
+        if number_card == last_number or color_card == last_color:
             correct = True   
         else:
             correct = False 
-    return correct,speciale
+    return correct, speciale
 
-def lasciaCarta(carta,posGiocatore):
+def lasciaCarta(carta, posGiocatore):
+    """
+    Gestisce l'abbandono della carta giocata.
+
+    Args:
+        carta (str): Carta giocata
+        posGiocatore (int): Posizione del giocatore che ha giocato la carta
+    """
     mazzo_tavolo.append(carta)
     print(mazzo_tavolo)
     giocatori[posGiocatore].rimuovi_carta(getCardComplete(carta))
 
 def checkCartaSpeciale(card):
-    if card=="FD" or card=="CC" or card[0]=="R" or card[0]=="S" or card[0]=="T": #carte speciali DRAW FOUR (FD) , CHANGE COLOR (CC) , REVERSE (R*) , SKIP (S*) , DRAW TWO (TB)
+    """
+    Verifica se la carta è una carta speciale di UNO.
+
+    Args:
+        card (str): Carta
+
+    Returns:
+        bool: True se è una carta speciale, altrimenti False
+    """
+    if card == "FD" or card == "CC" or card[0] == "R" or card[0] == "S" or card[0] == "T":
         return True
     return False
 
 def getCardComplete(cardRec):
-        if cardRec=="CC" :
-            return "Change Color"
-        elif cardRec[0]=="S" :
-            return "Skip_"+cardRec[1]
-        elif cardRec[0]=="R":
-            return "Reverse_"+cardRec[1]
-        elif cardRec[0]=="T":
-            return "Draw Two_"+cardRec[1]
-        elif cardRec=="FD":
-            return "Draw Four"
-        else:
-            return cardRec
+    """
+    Restituisce il nome completo della carta giocata.
+
+    Args:
+        cardRec (str): Carta giocata
+
+    Returns:
+        str: Nome completo della carta
+    """
+    if cardRec == "CC":
+        return "Change Color"
+    elif cardRec[0] == "S":
+        return "Skip_" + cardRec[1]
+    elif cardRec[0] == "R":
+        return "Reverse_" + cardRec[1]
+    elif cardRec[0] == "T":
+        return "Draw Two_" + cardRec[1]
+    elif cardRec == "FD":
+        return "Draw Four"
+    else:
+        return cardRec
 
 def create_seven(): 
-    cards=""   
-    cardArray=[]
+    """
+    Crea una serie di sette carte per iniziare il gioco.
+
+    Returns:
+        str: Carte create
+        list: Lista delle carte create
+    """
+    cards = ""
+    cardArray = []
     
     for numero in range(7):
-      card=random.choice(mazzo_temp)
-      cardArray.append(card)
-      cards+=card+"-"
-      mazzo_temp.remove(card)
+        card = random.choice(mazzo_temp)
+        cardArray.append(card)
+        cards += card + "-"
+        mazzo_temp.remove(card)
       
-    return cards,cardArray
+    return cards, cardArray
 
 def pesca_carta():
+    """
+    Pesca una carta dal mazzo temporaneo.
+
+    Returns:
+        str: Carta pescata
+    """
     card = mazzo_temp[-1]
     mazzo_temp.pop()
     return card
   
 
-
 def crea_mazzo_uno():
+    """
+    Crea e mescola il mazzo di carte per il gioco UNO.
+
+    Returns:
+        list: Mazzo di carte per il gioco UNO
+    """
     colori = ['R', 'G', 'B', 'V']  # Rosso, Verde, Blu, Verde
     numeri = [str(i) for i in range(10)]  # Numeri da 0 a 9
 
@@ -402,30 +506,41 @@ def crea_mazzo_uno():
     return mazzo
 
 def searchClient(nickClient):
+    """
+    Trova il giocatore corrispondente al nickname specificato.
+
+    Args:
+        nickClient (str): Nickname del giocatore
+
+    Returns:
+        tuple: Tupla contenente il giocatore corrispondente al nickname e la sua posizione
+    """
     i = 0
     for giocatore in giocatori:
         if giocatore.get_nick() == nickClient:
             return giocatore, i
         i += 1
-        
     return None, None
 
-      
 def StartGame():
-    game=True
-    if clients>=1:
-        conferma_message = "game;2"+"\r\n";
+    """
+    Avvia il gioco UNO quando sono presenti abbastanza giocatori.
+    """
+    game = True
+    if clients >= 1:
+        conferma_message = "game;2" + "\r\n"
         print(f"Invio: {conferma_message}")
-    elif clients>=3:
-        conferma_message = "game;3"+"\r\n";
-        print(f"Invio: {conferma_message}")  
-    elif clients>=4:
-        conferma_message = "game;4"+"\r\n";
+    elif clients >= 3:
+        conferma_message = "game;3" + "\r\n"
         print(f"Invio: {conferma_message}")
-    msg.send_messages(conferma_message.encode())
-    
+    elif clients >= 4:
+        conferma_message = "game;4" + "\r\n"
+        print(f"Invio: {conferma_message}")
 
 def main():
+    """
+    Funzione principale del server per gestire le connessioni dei giocatori e avviare il gioco UNO.
+    """
     server_address = "localhost"
     server_port = 666
 
