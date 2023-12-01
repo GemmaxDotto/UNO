@@ -50,13 +50,13 @@ public class threadMsg extends Thread {
                                             cond.Game.GUI.chatArea.append("giocatore" + receivedMessage.strip().split(";")[1] + " pesca due carte\n");
                                     break;
                                 case "pesca_quattro":
-                                            cond.Game.GUI.chatArea.append("giocatore" + receivedMessage.strip().split(";")[1] + " pesca quattro carte\n");
+                                            cond.Game.GUI.chatArea.append("giocatore" + receivedMessage.strip().split(";")[1] + " sceglie colore\n");
                                             if(cond.Game.nickNameString.equals(receivedMessage.strip().split(";")[1])){
                                                 cond.Game.GUI.handleCambioColore();
                                             }
                                     break;
                                 case "cambia_colore":
-                                            cond.Game.GUI.chatArea.append("giocatore" + receivedMessage.strip().split(";")[1] + " cambia il colore\n");
+                                            cond.Game.GUI.chatArea.append("giocatore" + receivedMessage.strip().split(";")[1] + " sceglie il colore\n");
                                             if(cond.Game.nickNameString.equals(receivedMessage.strip().split(";")[1])){
                                                 cond.Game.GUI.handleCambioColore();
                                             }
