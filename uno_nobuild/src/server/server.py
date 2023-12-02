@@ -176,7 +176,8 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                         global lastCard
                         if (lastCard and giocatoreClient.get_numero_carte()):
                             conferma_message="vittoria;"+nickClient
-                            msg.send_messages(nickClient,conferma_message,giocatori)  
+                            for numero in range(clients):
+                             msg.send_messages(giocatori[numero].get_nick(),conferma_message,giocatori)  
                         elif lastCard:
                             lastCard=False
 
@@ -185,6 +186,7 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                             for numero in range(clients):
                                 conferma_message=msgSpeciale+"\r\n" 
                                 msg.send_messages(giocatori[numero].get_nick(),conferma_message,giocatori)
+                            
                         if len(carte)>0: #se carte non vuoto
                             giocatoreSuccessivo = getGiocatoreSuccessivo()
                             for i in range(len(carte)):
@@ -202,7 +204,8 @@ def handle_client(client_socket, shared_message, shutdown_event, giocatori):
                     
                         if (lastCard and giocatoreClient.get_numero_carte()):
                             conferma_message="vittoria;"+nickClient
-                            msg.send_messages(nickClient,conferma_message,giocatori)
+                            for numero in range(clients):
+                             msg.send_messages(giocatori[numero].get_nick(),conferma_message,giocatori)  
                         elif lastCard:
                             lastCard=False
 
@@ -369,7 +372,6 @@ def gestisciSpeciale(card):
     elif card == "CC":
         msg = "speciale;"+giocatoreCorrente.get_nick()+";cambia_colore"
         spostaTurno(-1,cambio_verso= False)
-
     for i in range(pesca):
         c = pesca_carta()
         carte.append(c)
