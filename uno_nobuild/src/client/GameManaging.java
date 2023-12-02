@@ -257,6 +257,8 @@ public class GameManaging {
         this.clickedCard_tmp = null;
     }
 
+
+
     /**
      * Gestisce la risposta del server dopo l'azione di pesca di una carta.
      * Aggiorna lo stato del gioco e dell'interfaccia grafica del giocatore.
@@ -317,6 +319,13 @@ public class GameManaging {
     public void aggiornaTurnoGUI(String nomeGiocatore) {
         GUI.aggiornaTurno(nomeGiocatore);
 
+    }
+
+    public void gestisciRispostaVittoria(String nickClient) {
+        if(nickClient.equals(nickNameString))
+        GUI.vittoria();
+        else
+        GUI.sconfitta();
     }
 
 }
