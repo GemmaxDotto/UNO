@@ -357,4 +357,12 @@ public class ClientGUI extends JFrame {
         }
     }
 
+    public void vittoria() {
+        JOptionPane.showMessageDialog(this, "Hai vinto!");
+    }
+
+    public void sconfitta() {
+        JOptionPane.showMessageDialog(this, "Hai perso!");
+    }
+
 }
