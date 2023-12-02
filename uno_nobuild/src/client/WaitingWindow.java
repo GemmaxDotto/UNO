@@ -41,6 +41,7 @@ public class WaitingWindow extends JDialog {
                     // Attende finché Game.on non diventa true
                     while (!cond.Game.isOn()) {
                         try {
+                            setVisible(true);
                             Thread.sleep(1000);
                         } catch (InterruptedException ex) {
                             ex.printStackTrace();
