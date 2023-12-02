@@ -82,20 +82,22 @@ public class threadMsg extends Thread {
                         }
 
                         String nickClient = receivedMessage.strip().split(";")[1];
-                        // Gestione della pesca di una carta da parte del giocatore attivo
+
                         if (receivedMessage != null && receivedMessage.strip().split(";")[0].equals("pesca")
                                 && cond.Game.nickNameString.equals(nickClient)) {
                             cond.Game.gestisciRispostaPesca(receivedMessage.strip().split(";")[2]);
                             System.out.println("carta pescata");
                         }
-                        /*
-                         * 
-                         * if(receivedMessage != null
-                         * &&receivedMessage.strip().split(";")[0].equals("vittoria")){
-                         * cond.Game.gestisciRispostaVittoria(receivedMessage.strip().split(";")[1]);
-                         * System.out.println("vittoria ricevuta");
-                         * }
-                         */
+                      
+                        // Gestione del messaggio di risposta alla vittoria
+
+                        if (receivedMessage != null && receivedMessage.strip().split(";")[0].equals("vittoria")
+                                && cond.Game.nickNameString.equals(nickClient)) {
+                            cond.Game.gestisciRispostaVittoria(receivedMessage.strip().split(";")[1]);
+                            System.out.println("vittoria ricevuta");
+                        }
+
+
                         // risposta con carta centrale da cambiare
 
                         // Gestione del cambio della carta centrale
