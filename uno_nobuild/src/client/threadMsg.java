@@ -59,21 +59,21 @@ public class threadMsg extends Thread {
                             switch (receivedMessage.strip().split(";")[2]) {
                                 case "salta_turno":
                                     cond.Game.GUI.chatArea.append(
-                                            "giocatore" + receivedMessage.strip().split(";")[1] + " salta un turno\n");
+                                            "giocatore " + receivedMessage.strip().split(";")[1] + " salta un turno\n");
                                     break;
                                 case "pesca_due":
                                     cond.Game.GUI.chatArea.append(
-                                            "giocatore" + receivedMessage.strip().split(";")[1] + " pesca due carte\n");
+                                            "giocatore " + receivedMessage.strip().split(";")[1] + " pesca due carte\n");
                                     break;
                                 case "pesca_quattro":
                                     cond.Game.GUI.chatArea.append(
-                                            "giocatore" + receivedMessage.strip().split(";")[1] + " sceglie colore\n");
+                                            "giocatore " + receivedMessage.strip().split(";")[1] + " sceglie colore\n");
                                     if (cond.Game.nickNameString.equals(receivedMessage.strip().split(";")[1])) {
                                         cond.Game.GUI.handleCambioColore();
                                     }
                                     break;
                                 case "cambia_colore":
-                                    cond.Game.GUI.chatArea.append("giocatore" + receivedMessage.strip().split(";")[1]
+                                    cond.Game.GUI.chatArea.append("giocatore " + receivedMessage.strip().split(";")[1]
                                             + " sceglie il colore\n");
                                     if (cond.Game.nickNameString.equals(receivedMessage.strip().split(";")[1])) {
                                         cond.Game.GUI.handleCambioColore();
