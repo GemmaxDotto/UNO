@@ -5,20 +5,39 @@ skinparam packageStyle rectangle
 
 actor Player as "Player"
 
-rectangle "Uno Game" {
-  usecase "Start Game" as start
-  usecase "First" as first
+rectangle "Uno Game Client" {
+  usecase "Join Party" as start
+  usecase "Cards" as cards
   usecase "Lascia" as playCard
   usecase "Pesca" as drawCard
   usecase "Chat" as chat
   usecase "End Game" as end
 
   Player --> start
-  Player --> first
+  Player --> cards
   Player --> playCard
   Player --> drawCard
   Player --> chat
   Player --> end
+
 }
+
+rectangle "Uno Game Server" {
+  usecase "StartGame()" as Go
+  usecase "create_seven()" as cardsServer
+  usecase "lasciaCarta()" as playCardServer
+  usecase "pesca_carta()" as drawCardServer
+  usecase "Handle_Chat()" as chatServer
+  usecase "End()" as endServer
+
+  start --> Go
+  cards --> cardsServer
+  playCard --> playCardServer
+  drawCard --> drawCardServer
+  chat --> chatServer
+  end --> endServer
+  
+}
+
 
 @enduml

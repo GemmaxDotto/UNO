@@ -1,0 +1,153 @@
+@startuml
+class UnoCard {
+  - numero: String
+  - colore: String
+  - isSpeciale: boolean
+  + setNumero(numero: String): void
+  + setColore(colore: String): void
+  + setSpeciale(isSpeciale: boolean): void
+  + UnoCard(numero: String, colore: String, isSpeciale: boolean)
+  + getImagePath(): String
+  + setIconFromImage(imagePath: String): void
+  + toString(): String
+  + getNumero(): String
+  + getColore(): String
+  + isSpeciale(): boolean
+}
+
+class Condivisa {
+  - Game: TipoDelTuoGame
+  - tempCard: UnoCard
+  + Condivisa(GUI: ClientGUI)
+  + startGameManaging(): void
+}
+
+class GameManaging {
+  - client: TCPClient
+  - myCards: ArrayList<UnoCard>
+  - avvCards: ArrayList<Integer>
+  - numeroAvv: int
+  - on: boolean
+  - unoClicked: boolean
+  - nickNameString: String
+  - GUI: ClientGUI
+  - cond: Condivisa
+  - threadMsg: threadMsg
+  - clickedCard_tmp: UnoCard
+  + getMyCards(): ArrayList<UnoCard>
+  + GameManaging(GUI: ClientGUI, cond: Condivisa)
+  + startGame(): void
+  + JoinParty(): void
+  + waitCentral(): void
+  + Startgame(myCardString: String): void
+  + setOn(b: Boolean): void
+  + fromString(cardString: String): UnoCard
+  + setCenterCard(card: UnoCard): void
+  + isOn(): boolean
+  + handlePesca(): void
+  + handleLascia(clickedCard: UnoCard): void
+  + gestisciRispostaLascia(): void
+  + gestisciRispostaPesca(drawCardString: String): void
+  + gestisciRispostaCambia(string: String): void
+  + gestisciGUIAvv(numCarte: String): void
+  + handlePasso(): void
+  + aggiornaTurnoGUI(nomeGiocatore: String): void
+  + gestisciRispostaVittoria(nickClient: String): void
+}
+
+class CardComponent {
+  - card: UnoCard
+  - cond: Condivisa
+  + CardComponent(card: UnoCard, cond: Condivisa)
+  + getCard(): UnoCard
+  {method} CardClickListener
+}
+
+class ChooseColorDialog {
+  - selectedColor: String
+  + ChooseColorDialog(parent: Frame)
+  + getSelectedColor(): String
+  {method} ColorButtonListener
+}
+
+class ClientGUI {
+  - playerCards: ArrayList<CardComponent>
+  - mainPanel: JPanel
+  - centerCardPanel: JPanel
+  - cardsPanel: JPanel
+  - playerCardsPanel: JPanel
+  - cond: Condivisa
+  - topOpponentCardsPanel: JPanel
+  - rightOpponentCardsPanel: JPanel
+  - leftOpponentCardsPanel: JPanel
+  - opponentCard: CardComponent
+  - chatArea: JTextArea
+  + ClientGUI()
+  + setCards(): void
+  + updatePlayerCards(): void
+  + updateOpponentCards(): void
+  + updateCentralCard(): void
+  + aggiornaTurno(nomeGiocatore: String): void
+  + handleCambioColore(): void
+  + vittoria(): void
+  + sconfitta(): void
+}
+
+class CreditsDialog {
+  + CreditsDialog(parent: JFrame)
+}
+
+class GUIClientSTART {
+  + GUIClientSTART()
+  # setupUI(): void
+}
+
+class NickNameWindow {
+  + showInputDialog(): String
+}
+
+class RulesDialog {
+  + RulesDialog(parent: JFrame)
+}
+
+class TCPClient {
+  - socket: Socket
+  - output: PrintWriter
+  - input: BufferedReader
+  + TCPClient(serverAddress: String, serverPort: int)
+  + sendMessage(message: String): void
+  + receiveMessage(): String
+  + closeConnection(): void
+}
+
+class threadMsg {
+  - tcpClient: TCPClient
+  - cond: Condivisa
+  + threadMsg(tcpClient: TCPClient, cond: Condivisa)
+  + run(): void
+}
+
+GUIClientSTART -down-> RulesDialog
+GUIClientSTART -down-> CreditsDialog
+GUIClientSTART -down-> NickNameWindow
+GUIClientSTART -down-> ClientGUI
+ClientGUI *-right-o Condivisa
+ClientGUI -down-> ChooseColorDialog
+GameManaging --|> TCPClient
+GameManaging *-right-o Condivisa
+GameManaging -right-> UnoCard
+GameManaging -up-> threadMsg
+GameManaging -down-> NickNameWindow
+Condivisa *-right-o GameManaging
+CardComponent *-right-o Condivisa
+CardComponent -right-> UnoCard
+
+Condivisa *-right-o GameManaging
+
+Condivisa -up-> UnoCard
+TCPClient --|> Socket
+TCPClient --|> PrintWriter
+TCPClient --|> BufferedReader
+
+
+@enduml
